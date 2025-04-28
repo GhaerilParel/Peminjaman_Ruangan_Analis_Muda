@@ -117,8 +117,9 @@
             </div>
             <!-- /top-wizard -->
 
-            <form action="{{ url('/mail') }}" method="POST">
-             @csrf
+            <form action="{{ route('booking.store') }}" method="POST" enctype="multipart/form-data">
+    @csrf
+
                 <input id="website" name="website" type="text" value="">
                 <!-- Leave input above for security protection, read docs for details -->
 
@@ -149,14 +150,257 @@
 </div>
                             </div>
                         </div>
-                        <div class="row justify-content-center">
-                            <div class="col-md-12">
-                                <div class="clearfix position-relative mb-3" id="inline-calendar">
-                                    <input type="text" name="dates" id="dates" class="required" hidden="hidden">
-                                </div>
-                            </div>
-                        </div>
+                        <!-- <div class="row justify-content-center">
+    <div class="col-md-12">
+        <div class="clearfix position-relative mb-3" id="inline-calendar">
+            
+            <input type="date" name="booking_date" id="dates" class="required form-control" placeholder="MM/DD/YYYY" required>
+
+            
+        </div>
+    </div>-->
+</div> 
+
+<!-- kalender -->
+<!-- <div class="row justify-content-center">
+    <div class="col-md-12">
+        <div class="clearfix position-relative mb-3" id="inline-calendar">
+            <input type="date" name="booking_date" id="dates" class="required form-control" placeholder="YYYY-MM-DD" required>
+        </div>
+    </div>
+</div>
+<div id="calendar-container"></div> -->
+
+<div class="row justify-content-center">
+    <div class="col-md-12">
+        <div class="clearfix position-relative mb-3" id="inline-calendar">
+            <input type="date" name="booking_date" id="dates" class="required form-control mb-3" placeholder="YYYY-MM-DD" required>
+            <div id="calendar-container" class="calendar-container">
+                <div class="calendar-header">
+                    <button id="prev-month" class="btn btn-primary">&lt;</button>
+                    <span id="current-month-year"></span>
+                    <button id="next-month" class="btn btn-primary">&gt;</button>
+                </div>
+                <div class="calendar-body">
+                    <div class="calendar-days">
+                        <div>Sun</div>
+                        <div>Mon</div>
+                        <div>Tue</div>
+                        <div>Wed</div>
+                        <div>Thu</div>
+                        <div>Fri</div>
+                        <div>Sat</div>
                     </div>
+                    <div id="calendar-dates" class="calendar-dates"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .calendar-container {
+        width: 100%;
+        max-width: 600px;
+        margin: 0 auto;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        background-color: #fff;
+    }
+
+    .calendar-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 10px;
+        background-color: #007bff;
+        color: #fff;
+        border-bottom: 1px solid #ddd;
+    }
+
+    .calendar-body {
+        padding: 10px;
+    }
+
+    .calendar-days {
+        display: grid;
+        grid-template-columns: repeat(7, 1fr);
+        text-align: center;
+        font-weight: bold;
+        margin-bottom: 10px;
+    }
+
+    .calendar-dates {
+        display: grid;
+        grid-template-columns: repeat(7, 1fr);
+        gap: 5px;
+    }
+
+    .calendar-dates div {
+        text-align: center;
+        padding: 10px;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color 0.3s;
+    }
+
+    .calendar-dates div:hover {
+        background-color: #f0f0f0;
+    }
+
+    .calendar-dates .booked {
+        background-color: #ff0000;
+        color: #fff;
+        pointer-events: none;
+    }
+
+    .calendar-dates .available {
+        background-color: #00ff00;
+        color: #fff;
+    }
+</style>
+
+<!-- <style>
+    .calendar-date {
+        display: inline-block;
+        width: 40px;
+        height: 40px;
+        line-height: 40px;
+        text-align: center;
+        margin: 5px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+
+    .calendar-date.booked {
+        background-color: #ff0000; /* Warna merah untuk tanggal yang dibooking */
+        color: #fff;
+        pointer-events: none; /* Nonaktifkan klik */
+    }
+
+    .calendar-date.available {
+        background-color: #00ff00; /* Warna hijau untuk tanggal yang tersedia */
+        color: #fff;
+    }
+</style> -->
+
+<!-- <div id="custom-calendar" class="calendar-container">
+<input type="date" name="booking_date" id="dates" class="required form-control" placeholder="MM/DD/YYYY" required>
+    <div class="calendar-header">
+        <button id="prev-month" class="btn btn-primary">&lt;</button>
+        <span id="current-month-year"></span>
+        <button id="next-month" class="btn btn-primary">&gt;</button>
+    </div>
+    <div class="calendar-body">
+        <div class="calendar-days">
+            <div>Sun</div>
+            <div>Mon</div>
+            <div>Tue</div>
+            <div>Wed</div>
+            <div>Thu</div>
+            <div>Fri</div>
+            <div>Sat</div>
+        </div>
+        <div id="calendar-dates" class="calendar-dates"></div>
+    </div>
+</div> -->
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const calendarDates = document.getElementById("calendar-dates");
+        const currentMonthYear = document.getElementById("current-month-year");
+        const prevMonthBtn = document.getElementById("prev-month");
+        const nextMonthBtn = document.getElementById("next-month");
+
+        let currentDate = new Date();
+
+        // Fungsi untuk mendapatkan data booking dari API
+        async function fetchBookedDates() {
+            try {
+                const response = await fetch('{{ route("booked.dates.by.room") }}');
+                const data = await response.json();
+                return data.map(item => ({
+                    date: new Date(item.booking_date).toISOString().split('T')[0], // Format YYYY-MM-DD
+                    status: item.status
+                }));
+            } catch (error) {
+                console.error("Gagal mengambil data booking:", error);
+                return [];
+            }
+        }
+
+        // Fungsi untuk merender kalender
+        async function renderCalendar() {
+            const bookedDates = await fetchBookedDates();
+            const year = currentDate.getFullYear();
+            const month = currentDate.getMonth();
+
+            // Set header bulan dan tahun
+            currentMonthYear.textContent = `${currentDate.toLocaleString("default", {
+                month: "long"
+            })} ${year}`;
+
+            // Hapus tanggal sebelumnya
+            calendarDates.innerHTML = "";
+
+            // Dapatkan hari pertama bulan
+            const firstDay = new Date(year, month, 1).getDay();
+
+            // Dapatkan jumlah hari dalam bulan
+            const daysInMonth = new Date(year, month + 1, 0).getDate();
+
+            // Tambahkan tanggal kosong sebelum hari pertama
+            for (let i = 0; i < firstDay; i++) {
+                const emptyDiv = document.createElement("div");
+                calendarDates.appendChild(emptyDiv);
+            }
+
+            // Tambahkan tanggal ke kalender
+            for (let day = 1; day <= daysInMonth; day++) {
+                const dateDiv = document.createElement("div");
+                const date = new Date(year, month, day).toISOString().split('T')[0]; // Format YYYY-MM-DD
+
+                dateDiv.classList.add("calendar-date");
+                dateDiv.textContent = day;
+
+                // Periksa apakah tanggal sudah dibooking
+                const isBooked = bookedDates.some(
+                    booked => booked.date === date && booked.status === "booked"
+                );
+
+                if (isBooked) {
+                    dateDiv.classList.add("booked");
+                } else {
+                    dateDiv.classList.add("available");
+                    dateDiv.addEventListener("click", () => {
+                        alert(`Tanggal dipilih: ${date}`);
+                    });
+                }
+
+                calendarDates.appendChild(dateDiv);
+            }
+        }
+
+        // Navigasi bulan sebelumnya
+        prevMonthBtn.addEventListener("click", () => {
+            currentDate.setMonth(currentDate.getMonth() - 1);
+            renderCalendar();
+        });
+
+        // Navigasi bulan berikutnya
+        nextMonthBtn.addEventListener("click", () => {
+            currentDate.setMonth(currentDate.getMonth() + 1);
+            renderCalendar();
+        });
+
+        // Render kalender pertama kali
+        renderCalendar();
+    });
+</script>
+
+
                     <!-- /Step -->
 
                     <div class="step">
@@ -187,13 +431,14 @@
                             </div>
                         </div>
 
-<script>
+                        <script>
 document.addEventListener("DOMContentLoaded", function() {
-    let roomType1 = document.getElementById("room_type_1");
-    let roomType2 = document.getElementById("room_type_2");
+    const roomType1 = document.getElementById("room_type_1");
+    const roomType2 = document.getElementById("room_type_2");
 
     roomType1.addEventListener("change", function() {
-        roomType2.value = roomType1.value; // Menyamakan pilihan
+        const selectedIndex = roomType1.selectedIndex;
+        roomType2.selectedIndex = selectedIndex;
     });
 });
 </script>
@@ -210,7 +455,7 @@ document.addEventListener("DOMContentLoaded", function() {
                             <div class="col-sm-6">
                                 <div class="mb-3 qty-buttons d-flex align-items-center">
                                     <input type="button" value="+" class="qtyplus btn btn-primary" name="Jumlah Orang">
-                                    <input type="text" name="Jumlah Orang" id="jumlah_orang" value="1" class="qty form-control required mx-2 flex-grow-1" placeholder="Jumlah Orang" style="width: 100%; text-align: left; padding-left: 10px;">
+                                    <input type="text" name="jumlah_orang" id="jumlah_orang" value="1" class="qty form-control required mx-2 flex-grow-1" placeholder="Jumlah Orang" style="width: 100%; text-align: left; padding-left: 10px;">
                                     <input type="button" value="-" class="qtyminus btn btn-primary" name="Jumlah Orang">
                                 </div>
                             </div>
@@ -263,6 +508,33 @@ document.addEventListener("DOMContentLoaded", function() {
                                     <input type="text" name="telephone" id="telephone" class="form-control required" placeholder="Your Telephone">
                                     <label for="telephone">No Telepon</label>
                                 </div>
+                                <div class="row mb-4">
+    <div class="col-md-6">
+        <div class="form-floating">
+            <input type="time" name="waktu_mulai" id="waktu_mulai" class="form-control required">
+            <label for="waktu_mulai">Waktu Mulai</label>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="form-floating">
+            <input type="time" name="waktu_selesai" id="waktu_selesai" class="form-control required">
+            <label for="waktu_selesai">Waktu Selesai</label>
+        </div>
+    </div>
+</div>
+
+<script>
+    const mulai = document.getElementById('waktu_mulai');
+    const selesai = document.getElementById('waktu_selesai');
+
+    selesai.addEventListener('change', () => {
+        if (selesai.value <= mulai.value) {
+            alert("Waktu selesai harus setelah waktu mulai.");
+            selesai.value = "";
+        }
+    });
+</script>
+
                                         <div class="mb-4 form-floating">
                                             <textarea name="review" id="review" class="form-control required" placeholder="Your Review"></textarea>
                                             <label for="review">Alasan Peminjaman</label>
@@ -274,11 +546,13 @@ document.addEventListener("DOMContentLoaded", function() {
                                     <button class="btn btn-primary position-absolute end-0 top-50 translate-middle-y me-2" id="upload-btn">Choose File</button>
                                 </div>
                                 
+
                                 <script>
                                     document.getElementById('upload-btn').addEventListener('click', function() {
                                         document.getElementById('file-input').click();
                                     });
                                 
+
                                     document.getElementById('file-input').addEventListener('change', function() {
                                         let fileName = this.files.length > 0 ? this.files[0].name : '';
                                         document.getElementById('file-name').value = fileName;
@@ -307,13 +581,17 @@ document.addEventListener("DOMContentLoaded", function() {
                 </div>
                 <!-- /bottom-wizard -->
                 
-                @if(session('success'))
-    <div class="alert alert-success">
-        {{ session('success') }}
-    </div>
+                @if($errors->any())
+  <div class="alert alert-danger">
+    <ul>
+      @foreach($errors->all() as $err)
+        <li>{{ $err }}</li>
+      @endforeach
+    </ul>
+  </div>
 @endif
 
-            </form>
+ </form>
         </div>
         <!-- /Wizard container -->
     </div>

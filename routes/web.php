@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\MailController;
+use App\Http\Controllers\BookingController;
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 
@@ -38,4 +39,6 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/bookings', [BookingController::class, 'store'])->name('bookings.store');
 });
 
-Route::post('/mail', [MailController::class, 'send'])->name('mail');
+Route::post('/booking', [BookingController::class, 'store'])->name('booking.store');
+Route::get('/api/booked-dates-by-room', [BookingController::class, 'getBookedDatesByRoom'])->name('booked.dates.by.room');
+

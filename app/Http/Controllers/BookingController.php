@@ -50,48 +50,100 @@ class BookingController extends Controller
             'waktu_selesai' => $request->waktu_selesai,
             'alasan'        => $request->review,
             'file'          => $filePath ?? null,
+            'status'        => 'pending',
         ]);
 
         return redirect()->back()->with('success', 'Booking berhasil disimpan!');
     }
 
     // Controller untuk mendapatkan data tanggal yang dibooking berdasarkan ruangan
-    public function getBookedDatesByRoom(Request $request)
+    public function getBookedDates(Request $request)
     {
-        $roomType = $request->query('room_type');
+        $roomType = $request->query('room_type'); // Ambil parameter room_type dari request
 
-        $bookedDates = Booking::where('room_type', $roomType)
-            ->select('booking_date', 'waktu_mulai', 'waktu_selesai', 'nama')
-            ->get()
-            ->groupBy('booking_date')
-            ->map(function ($bookings, $date) {
-                $totalBookedHours = $bookings->reduce(function ($carry, $booking) {
-                    $start = Carbon::parse($booking->waktu_mulai);
-                    $end = Carbon::parse($booking->waktu_selesai);
-                    return $carry + $start->diffInHours($end);
-                }, 0);
+        // Ambil data booking dengan status approved
+        $bookings = Booking::where('room_type', $roomType)
+            ->where('status', 'approved') // Hanya ambil booking dengan status approved
+            ->select('booking_date', 'waktu_mulai', 'waktu_selesai', 'nama') // Pilih kolom yang diperlukan
+            ->get();
 
-                $status = 'available'; // Default status
-                if ($totalBookedHours >= 14) { // 14 jam (6 pagi - 8 malam)
-                    $status = 'fully_booked';
-                } elseif ($totalBookedHours > 0) {
-                    $status = 'partially_booked';
-                }
+        // Format data untuk dikirim ke frontend
+        $formattedBookings = $bookings->groupBy('booking_date')->map(function ($bookingsOnDate) {
+            return [
+                'date' => $bookingsOnDate->first()->booking_date,
+                'status' => 'approved',
+                'bookings' => $bookingsOnDate->map(function ($booking) {
+                    return [
+                        'nama' => $booking->nama,
+                        'waktu_mulai' => $booking->waktu_mulai,
+                        'waktu_selesai' => $booking->waktu_selesai,
+                    ];
+                })->toArray(),
+            ];
+        })->values();
 
-                return [
-                    'booking_date' => $date,
-                    'status' => $status,
-                    'bookings' => $bookings->map(function ($booking) {
-                        return [
-                            'name' => $booking->nama,
-                            'time' => $booking->waktu_mulai . ' - ' . $booking->waktu_selesai,
-                        ];
-                    }),
-                ];
+        return response()->json($formattedBookings);
+    }
+
+    public function status()
+    {
+        $bookings = Booking::all(); // Ambil semua data booking
+        return view('status', compact('bookings'));
+    }
+
+    public function update(Request $request, Booking $booking)
+    {
+        $request->validate([
+            'room_type'     => 'required',
+            'booking_date'  => 'required|date',
+            'waktu_mulai'   => 'required|date_format:H:i|after_or_equal:06:00|before_or_equal:20:00',
+            'waktu_selesai' => 'required|date_format:H:i|after:waktu_mulai|before_or_equal:20:00',
+            'file'          => 'nullable|mimes:pdf|max:2048', // Hanya file PDF dengan ukuran maksimal 2MB
+        ]);
+
+        // Simpan file jika ada
+        if ($request->hasFile('file')) {
+            $filePath = $request->file('file')->store('uploads', 'public');
+            $booking->file = $filePath;
+        }
+
+        // Validasi apakah waktu di hari yang sama sudah dibooking
+        $isTimeConflict = Booking::where('room_type', $request->room_type)
+            ->where('booking_date', $request->booking_date)
+            ->where('id', '!=', $booking->id) // Abaikan booking yang sedang diedit
+            ->where(function ($query) use ($request) {
+                $query->where('waktu_mulai', '<', $request->waktu_selesai)
+                      ->where('waktu_selesai', '>', $request->waktu_mulai);
             })
-            ->values();
+            ->exists();
 
-        return response()->json($bookedDates);
+        if ($isTimeConflict) {
+            return redirect()->back()->withErrors(['error' => 'Waktu yang dipilih sudah dibooking pada tanggal tersebut.']);
+        }
+
+        // Update data booking
+        $booking->update([
+            'room_type'     => $request->room_type,
+            'booking_date'  => $request->booking_date,
+            'jumlah_orang'  => $request->jumlah_orang,
+            'nama'          => $request->firstname,
+            'nim'           => $request->nim,
+            'jurusan'       => $request->jurusan,
+            'email'         => $request->email,
+            'no_telepon'    => $request->telephone,
+            'waktu_mulai'   => $request->waktu_mulai,
+            'waktu_selesai' => $request->waktu_selesai,
+            'alasan'        => $request->review,
+            'status'        => 'pending', // Set status menjadi pending setelah pengeditan
+        ]);
+
+        return redirect()->route('status')->with('success', 'Booking berhasil diperbarui!');
+    }
+
+    public function edit(Booking $booking)
+    {
+        return view('edit', compact('booking')); // Arahkan ke view edit
     }
 }
+
 

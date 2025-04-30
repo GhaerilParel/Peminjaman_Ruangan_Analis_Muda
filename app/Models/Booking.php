@@ -22,11 +22,13 @@ class Booking extends Model
         'waktu_selesai',
         'alasan',
         'file',
-        'status'  // Menambahkan 'status' ke dalam field yang dapat diisi
+        'status',
     ];   
     
     public function room()
     {
         return $this->belongsTo(Room::class, 'room_id');
+        return $this->belongsTo(Room::class, 'room_type');
     }
+
 }

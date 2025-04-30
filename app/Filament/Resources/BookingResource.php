@@ -91,6 +91,24 @@ class BookingResource extends Resource
                 TextColumn::make('nama')
                     ->label('Nama')
                     ->searchable(),
+                TextColumn::make('room_type')
+                    ->label('Tipe Ruangan')
+                    ->formatStateUsing(function ($state) {
+                        $rooms = [
+                            1 => 'CB Pemrograman',
+                            2 => 'CB K70-1',
+                            3 => 'CA RPL',
+                            4 => 'CA KOM 1',
+                            5 => 'CA KOM 2',
+                            6 => 'CB Jaringan',
+                            7 => 'CB KOM 1',
+                            8 => 'CB KOM 2',
+                            9 => 'CB KOM 3',
+                            10 => 'CB KOM 4',
+                            11 => 'CB KOM 5',
+                        ];
+                        return $rooms[$state] ?? 'Tidak Diketahui';
+                    }),
                 BadgeColumn::make('status')
                     ->label('Status')
                     ->colors([

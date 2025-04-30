@@ -40,5 +40,9 @@ Route::middleware(['auth'])->group(function () {
 });
 
 Route::post('/booking/store', [BookingController::class, 'store'])->name('booking.store')->middleware('auth');
-Route::get('/api/booked-dates-by-room', [BookingController::class, 'getBookedDatesByRoom'])->name('booked.dates.by.room');
+Route::get('/api/booked-dates', [BookingController::class, 'getBookedDates'])->name('booked.dates.by.room');
+Route::get('/status-peminjaman', [BookingController::class, 'status'])->name('status');
 
+Route::get('/booking/{booking}/edit', [BookingController::class, 'edit'])->name('booking.edit');
+Route::put('/booking/{booking}', [BookingController::class, 'update'])->name('booking.update');
+Route::delete('/booking/{booking}', [BookingController::class, 'destroy'])->name('booking.destroy');

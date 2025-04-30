@@ -137,7 +137,8 @@ class BookingController extends Controller
             'status'        => 'pending', // Set status menjadi pending setelah pengeditan
         ]);
 
-        return redirect()->route('status')->with('success', 'Booking berhasil diperbarui!');
+        // Redirect ke route status.peminjaman
+        return redirect()->route('status.peminjaman')->with('success', 'Booking berhasil diperbarui!');
     }
 
     public function edit(Booking $booking)

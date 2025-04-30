@@ -1,3 +1,101 @@
 /*============================================================================================*/
 /* Your custom styles below */
 /*============================================================================================*/
+.calendar-container {
+    width: 100%;
+    max-width: 600px;
+    margin: 0 auto;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    background-color: #fff;
+}
+
+/* Menyembunyikan header toolbar */
+.fc-header-toolbar {
+    display: none !important;
+}
+
+/* Menyembunyikan toolbar yang berkaitan dengan kalender */
+.fc-toolbar {
+    display: none !important;
+}
+
+.fc-view-harness {
+    display: none !important;
+}
+
+.calendar-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    background-color: #007bff;
+    color: #fff;
+    border-bottom: 1px solid #ddd;
+}
+
+.calendar-body {
+    padding: 10px;
+}
+
+.calendar-days {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    text-align: center;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.calendar-dates {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 5px;
+}
+
+.calendar-dates div {
+    text-align: center;
+    padding: 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.calendar-dates div:hover {
+    background-color: #f0f0f0;
+}
+
+.calendar-dates .fully-booked {
+    background-color: #ff0000;
+    /* Merah untuk fully booked */
+    color: #fff;
+    cursor: pointer;
+    /* Ubah pointer menjadi klik */
+}
+
+.calendar-dates .partially-booked {
+    background-color: #ffc107;
+    /* Kuning untuk partially booked */
+    color: #000;
+    cursor: pointer;
+}
+
+.calendar-dates .available {
+    background-color: #00ff00;
+    /* Hijau untuk tersedia */
+    color: #fff;
+    cursor: pointer;
+}
+
+.calendar-dates .available:hover {
+    background-color: #008000;
+}
+
+.fc-daygrid-day.fc-day-disabled {
+    background-color: #ff0000 !important;
+    /* Warna merah untuk tanggal yang dibooking */
+    pointer-events: none;
+    /* Nonaktifkan klik */
+}
+

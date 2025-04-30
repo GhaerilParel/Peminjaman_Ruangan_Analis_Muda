@@ -39,6 +39,6 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/bookings', [BookingController::class, 'store'])->name('bookings.store');
 });
 
-Route::post('/booking', [BookingController::class, 'store'])->name('booking.store');
+Route::post('/booking/store', [BookingController::class, 'store'])->name('booking.store')->middleware('auth');
 Route::get('/api/booked-dates-by-room', [BookingController::class, 'getBookedDatesByRoom'])->name('booked.dates.by.room');
 

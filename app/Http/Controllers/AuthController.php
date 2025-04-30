@@ -14,7 +14,18 @@ class AuthController extends Controller
 {
     $request->validate([
         'name' => 'required|string|max:255',
-        'email' => 'required|string|email|max:255|unique:users',
+        'email' => [
+            'required',
+            'string',
+            'email',
+            'max:255',
+            'unique:users',
+            function ($attribute, $value, $fail) {
+                if (!str_ends_with($value, '@apps.ipb.ac.id')) {
+                    $fail('Email harus menggunakan domain @apps.ipb.ac.id.');
+                }
+            },
+        ],
         'password' => [
             'required',
             'string',
@@ -27,7 +38,7 @@ class AuthController extends Controller
     ], [
         'password.regex' => 'Password harus mengandung huruf besar, huruf kecil, dan angka.',
         'password.min' => 'Minimal 8 karakter.',
-    ]);      
+    ]);
 
     // Simpan user ke database
     $user = User::create([
@@ -44,8 +55,16 @@ class AuthController extends Controller
     public function login(Request $request)
     {
         $credentials = $request->validate([
-            'email' => 'required|email',
-            'password' => 'required'
+            'email' => [
+                'required',
+                'email',
+                function ($attribute, $value, $fail) {
+                    if (!str_ends_with($value, '@apps.ipb.ac.id')) {
+                        $fail('Email harus menggunakan domain @apps.ipb.ac.id.');
+                    }
+                },
+            ],
+            'password' => 'required',
         ]);
 
         if (Auth::attempt($credentials)) {
@@ -53,7 +72,6 @@ class AuthController extends Controller
             return redirect()->intended('/index')->with('success', 'Login berhasil!');
         }
 
-        // ✅ Kirim notifikasi jika password salah
         return back()->withErrors(['email' => 'Email atau password salah!'])->withInput();
     }
 

@@ -24,4 +24,9 @@ class Booking extends Model
         'file',
         'status'  // Menambahkan 'status' ke dalam field yang dapat diisi
     ];   
+    
+    public function room()
+    {
+        return $this->belongsTo(Room::class, 'room_id');
+    }
 }

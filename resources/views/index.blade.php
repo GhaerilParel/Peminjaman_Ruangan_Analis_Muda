@@ -658,7 +658,8 @@
                                         <label for="review">Alasan Peminjaman</label>
                                     </div>
                                     <div class="form-floating mb-4 position-relative">
-                                        <input type="file" name="file" id="file-input" class="d-none">
+                                        <input type="file" name="file" id="file-input" class="d-none"
+                                            accept="application/pdf">
                                         <input type="text" id="file-name" class="form-control"
                                             placeholder="Upload File" readonly
                                             style="pointer-events: none; background-color: #e9ecef;">
@@ -712,6 +713,12 @@
                                 @endforeach
                             </ul>
                         </div>
+                    @endif
+
+                    @if ($errors->has('file'))
+                    <div class="alert alert-danger">
+                       {{ $errors->first('file') }}
+                     </div>
                     @endif
 
                 </form>

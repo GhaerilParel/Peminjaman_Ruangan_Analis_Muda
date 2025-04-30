@@ -15,7 +15,13 @@ class BookingController extends Controller
             'booking_date'  => 'required|date',
             'waktu_mulai'   => 'required|date_format:H:i|after_or_equal:06:00|before_or_equal:20:00',
             'waktu_selesai' => 'required|date_format:H:i|after:waktu_mulai|before_or_equal:20:00',
+            'file' => 'nullable|mimes:pdf|max:2048', // Hanya file PDF dengan ukuran maksimal 2MB
         ]);
+
+        // Simpan file jika ada
+        if ($request->hasFile('file')) {
+            $filePath = $request->file('file')->store('uploads', 'public');
+        }
 
         // Validasi apakah waktu di hari yang sama sudah dibooking
         $isTimeConflict = Booking::where('room_type', $request->room_type)

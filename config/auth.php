@@ -40,6 +40,12 @@ return [
             'driver' => 'session',
             'provider' => 'users',
         ],
+
+        'admin' => [
+            'driver' => 'session',
+            'provider' => 'admins',
+            'session' => 'admin_session', // Tambahkan ini untuk memisahkan sesi admin
+        ],
     ],
 
     /*
@@ -62,7 +68,12 @@ return [
     'providers' => [
         'users' => [
             'driver' => 'eloquent',
-            'model' => env('AUTH_MODEL', App\Models\User::class),
+            'model' => App\Models\User::class,
+        ],
+
+        'admins' => [
+            'driver' => 'eloquent',
+            'model' => App\Models\Admin::class, // Pastikan Anda memiliki model Admin
         ],
 
         // 'users' => [
@@ -113,3 +124,10 @@ return [
     'password_timeout' => env('AUTH_PASSWORD_TIMEOUT', 10800),
 
 ];
+
+Auth::guard('admin')->attempt([
+    'email' => $request->email,
+    'password' => $request->password,
+]);
+
+Auth::guard('admin')->logout();

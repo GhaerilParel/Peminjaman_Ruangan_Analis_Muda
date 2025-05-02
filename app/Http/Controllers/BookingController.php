@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Booking;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\BookingStatusUpdated;
 
 class BookingController extends Controller
 {
@@ -15,7 +17,7 @@ class BookingController extends Controller
             'booking_date'  => 'required|date',
             'waktu_mulai'   => 'required|date_format:H:i|after_or_equal:06:00|before_or_equal:20:00',
             'waktu_selesai' => 'required|date_format:H:i|after:waktu_mulai|before_or_equal:20:00',
-            'file' => 'nullable|mimes:pdf|max:2048', // Hanya file PDF dengan ukuran maksimal 2MB
+            'file'          => 'nullable|mimes:pdf|max:2048',
         ]);
 
         // Simpan file jika ada
@@ -26,6 +28,7 @@ class BookingController extends Controller
         // Validasi apakah waktu di hari yang sama sudah dibooking
         $isTimeConflict = Booking::where('room_type', $request->room_type)
             ->where('booking_date', $request->booking_date)
+            ->where('status', 'approved') // Hanya booking dengan status approved
             ->where(function ($query) use ($request) {
                 $query->where('waktu_mulai', '<', $request->waktu_selesai)
                       ->where('waktu_selesai', '>', $request->waktu_mulai);
@@ -44,7 +47,7 @@ class BookingController extends Controller
             'nama'          => $request->firstname,
             'nim'           => $request->nim,
             'jurusan'       => $request->jurusan,
-            'email'         => $request->email,
+            'email'         => auth()->user()->email, // Gunakan email pengguna yang login
             'no_telepon'    => $request->telephone,
             'waktu_mulai'   => $request->waktu_mulai,
             'waktu_selesai' => $request->waktu_selesai,
@@ -87,7 +90,7 @@ class BookingController extends Controller
 
     public function status()
     {
-        $bookings = Booking::all(); // Ambil semua data booking
+        $bookings = Booking::where('email', auth()->user()->email)->get(); // Filter berdasarkan email pengguna yang login
         return view('status', compact('bookings'));
     }
 
@@ -98,7 +101,7 @@ class BookingController extends Controller
             'booking_date'  => 'required|date',
             'waktu_mulai'   => 'required|date_format:H:i|after_or_equal:06:00|before_or_equal:20:00',
             'waktu_selesai' => 'required|date_format:H:i|after:waktu_mulai|before_or_equal:20:00',
-            'file'          => 'nullable|mimes:pdf|max:2048', // Hanya file PDF dengan ukuran maksimal 2MB
+            'file'          => 'nullable|mimes:pdf|max:2048',
         ]);
 
         // Simpan file jika ada
@@ -110,6 +113,7 @@ class BookingController extends Controller
         // Validasi apakah waktu di hari yang sama sudah dibooking
         $isTimeConflict = Booking::where('room_type', $request->room_type)
             ->where('booking_date', $request->booking_date)
+            ->where('status', 'approved') // Hanya booking dengan status approved
             ->where('id', '!=', $booking->id) // Abaikan booking yang sedang diedit
             ->where(function ($query) use ($request) {
                 $query->where('waktu_mulai', '<', $request->waktu_selesai)
@@ -137,13 +141,29 @@ class BookingController extends Controller
             'status'        => 'pending', // Set status menjadi pending setelah pengeditan
         ]);
 
+        // Ambil data terbaru dari database
+        $booking = Booking::find($booking->id);
+
+        // Kirim email dengan data terbaru
+        Mail::to($booking->email)->send(new BookingStatusUpdated($booking));
+
         // Redirect ke route status.peminjaman
         return redirect()->route('status.peminjaman')->with('success', 'Booking berhasil diperbarui!');
+        dd($request->all()); // Debug the incoming request data
     }
 
     public function edit(Booking $booking)
     {
         return view('edit', compact('booking')); // Arahkan ke view edit
+    }
+
+    public function reject(Booking $booking)
+    {
+        $booking->update([
+            'status' => 'rejected',
+        ]);
+
+        return redirect()->route('status.peminjaman')->with('success', 'Booking berhasil dihapus (status: rejected)!');
     }
 }
 

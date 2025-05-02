@@ -67,11 +67,12 @@ class AuthController extends Controller
             'password' => 'required',
         ]);
 
-        if (Auth::attempt($credentials)) {
+        if (Auth::guard('web')->attempt($credentials)) {
             $request->session()->regenerate();
             return redirect()->intended('/index')->with('success', 'Login berhasil!');
         }
 
+        Auth::guard('web')->logout();
         return back()->withErrors(['email' => 'Email atau password salah!'])->withInput();
     }
 

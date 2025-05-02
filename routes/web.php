@@ -37,6 +37,7 @@ Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 Route::middleware(['auth'])->group(function () {
     Route::get('/bookings', [BookingController::class, 'index'])->name('bookings.index');
     Route::post('/bookings', [BookingController::class, 'store'])->name('bookings.store');
+    Route::get('/status-peminjaman', [BookingController::class, 'status'])->name('status.peminjaman');
 });
 
 Route::post('/booking/store', [BookingController::class, 'store'])->name('booking.store')->middleware('auth');
@@ -45,4 +46,22 @@ Route::get('/api/booked-dates', [BookingController::class, 'getBookedDates'])->n
 Route::get('/status-peminjaman', [BookingController::class, 'status'])->name('status.peminjaman');
 Route::get('/booking/{booking}/edit', [BookingController::class, 'edit'])->name('booking.edit');
 Route::put('/booking/{booking}', [BookingController::class, 'update'])->name('booking.update');
+Route::put('/booking/{booking}/reject', [BookingController::class, 'reject'])->name('booking.reject');
 Route::delete('/booking/{booking}', [BookingController::class, 'destroy'])->name('booking.destroy');
+
+Route::middleware(['auth'])->group(function () {
+    Route::get('/status-peminjaman', [BookingController::class, 'status'])->name('status.peminjaman');
+});
+
+// Routes untuk aplikasi utama
+Route::middleware(['auth:web'])->group(function () {
+    Route::get('/dashboard', [DashboardController::class, 'index']);
+});
+
+Route::middleware(['auth:web'])->group(function () {
+    Route::get('/user/dashboard', [UserController::class, 'dashboard'])->name('user.dashboard');
+});
+
+Route::middleware(['auth:admin'])->group(function () {
+    Route::get('/admin/dashboard', [AdminController::class, 'dashboard'])->name('admin.dashboard');
+});

@@ -65,7 +65,12 @@ class BookingResource extends Resource
                         'pending' => 'Pending',
                         'rejected' => 'Rejected',
                     ])
-                    ->required(),
+                    ->required()
+                    ->afterStateUpdated(function ($state, $record) {
+                        if ($state === 'rejected') {
+                            // Logika tambahan jika diperlukan
+                        }
+                    }),
                 Forms\Components\FileUpload::make('file')
                     ->label('File')
                     ->directory('uploads') // Simpan file di folder 'uploads'
@@ -91,6 +96,9 @@ class BookingResource extends Resource
                 TextColumn::make('nama')
                     ->label('Nama')
                     ->searchable(),
+                TextColumn::make('jumlah_orang') // Tambahkan kolom ini
+                    ->label('Jumlah Orang')
+                    ->sortable(),
                 TextColumn::make('room_type')
                     ->label('Tipe Ruangan')
                     ->formatStateUsing(function ($state) {

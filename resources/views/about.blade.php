@@ -4,7 +4,8 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="Limmo - Register, Reservation, Questionare, Reviews, Quotation form Multipurpose Wizard with SMTP and HTML email support">
+    <meta name="description"
+        content="Limmo - Register, Reservation, Questionare, Reviews, Quotation form Multipurpose Wizard with SMTP and HTML email support">
     <meta name="author" content="Ansonika">
     <title>Peminjaman Ruangan Laboratorium Komputer Sekolah Vokasi IPB University</title>
 
@@ -12,8 +13,10 @@
     <link rel="shortcut icon" href="img/favicon.ico" type="image/x-icon">
     <link rel="apple-touch-icon" type="image/x-icon" href="img/apple-touch-icon-57x57-precomposed.png">
     <link rel="apple-touch-icon" type="image/x-icon" sizes="72x72" href="img/apple-touch-icon-72x72-precomposed.png">
-    <link rel="apple-touch-icon" type="image/x-icon" sizes="114x114" href="img/apple-touch-icon-114x114-precomposed.png">
-    <link rel="apple-touch-icon" type="image/x-icon" sizes="144x144" href="img/apple-touch-icon-144x144-precomposed.png">
+    <link rel="apple-touch-icon" type="image/x-icon" sizes="114x114"
+        href="img/apple-touch-icon-114x114-precomposed.png">
+    <link rel="apple-touch-icon" type="image/x-icon" sizes="144x144"
+        href="img/apple-touch-icon-144x144-precomposed.png">
 
     <!-- GOOGLE WEB FONT -->
     <link rel="preconnect" href="https://fonts.gstatic.com">
@@ -23,7 +26,7 @@
     <link href="css/bootstrap.min.css" rel="stylesheet">
     <link href="css/style.css" rel="stylesheet">
     <link href="css/vendors.css" rel="stylesheet">
-    
+
     <!-- YOUR CUSTOM CSS -->
     <link href="css/custom.css" rel="stylesheet">
 </head>
@@ -35,15 +38,17 @@
     <div id="loader_form">
         <img src="img/logo.png" height="40" width="40" alt="Loading...">
     </div><!-- /loader_form -->
-    
+
     <header>
         <div class="container-fluid">
             <div class="row d-flex align-items-center">
                 <div class="col-4">
-                    <a data-bs-toggle="offcanvas" href="#offcanvasNav" role="button" class="btn_nav"><i class="bi bi-list"></i></a>
+                    <a data-bs-toggle="offcanvas" href="#offcanvasNav" role="button" class="btn_nav"><i
+                            class="bi bi-list"></i></a>
                 </div>
                 <div class="col-4 text-center">
-                    <a href="index.html"><img src="img/Emblem-Utama-1.png" alt="" class="img-fluid" width="95" height="30"></a>
+                    <a href="index.html"><img src="img/Emblem-Utama-1.png" alt="" class="img-fluid"
+                            width="95" height="30"></a>
                 </div>
                 <div class="col-4">
                     <div id="social">
@@ -62,177 +67,97 @@
     <!-- /header -->
 
     <div class="offcanvas offcanvas-start" tabindex="-1" id="offcanvasNav">
-	    <div class="offcanvas-header">
-	        <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
-	    </div>
-	    <div class="offcanvas-body">
+        <div class="offcanvas-header">
+            <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+        </div>
+        <div class="offcanvas-body">
             <ul>
-            @auth
-    <li><a href="#" class="animated_link">Hi, {{ implode(' ', array_slice(explode(' ', Auth::user()->name), 0, 2)) }}!</a></li>
-@else
-    <li><a href="{{ url('/login') }}" class="animated_link">Masuk/Daftar</a></li>
-@endauth
+                @auth
+                    <li><a href="#" class="animated_link">Hi,
+                            {{ implode(' ', array_slice(explode(' ', Auth::user()->name), 0, 2)) }}!</a></li>
+                @else
+                    <li><a href="{{ url('/login') }}" class="animated_link">Masuk/Daftar</a></li>
+                @endauth
             </ul>
             <hr>
-	        <ul>
-            <li><a href="{{ url('/index') }}" class="animated_link">Beranda</a></li>
-                    <li><a href="../html/theme/templates/admin/404.html" class="animated_link ">Template Surat</a></li>
-                    <li><a href="../html/theme/templates/admin/404.html" class="animated_link ">Status Peminjaman</a></li>
-                </ul>
-                <hr>
-                <ul>
+            <ul>
+                <li><a href="{{ url('/index') }}" class="animated_link">Beranda</a></li>
+                <li><a href="https://drive.google.com/file/d/1Lc3HoaGEHCx_huejyJ2EM1ybRG6v0eai/view?usp=sharing" class="animated_link ">Template Surat</a></li>
+                <li><a href="{{ route('status.peminjaman') }}" class="animated_link ">Status Peminjaman</a></li>
+            </ul>
+            <hr>
+            <ul>
                 <li><a href="{{ url('/about') }}" class="animated_link">About</a></li>
                 <li><a href="{{ url('/contact') }}" class="animated_link">Contacts</a></li>
-	        </ul>
+            </ul>
             <hr>
             <hr>
             <ul>
-            @auth
-    <!-- Tombol Logout -->
-    <li class="logout-container">
-        <form action="{{ url('/logout') }}" method="POST">
-            @csrf
-            <button type="submit" class="logout-button">
-                Logout
-            </button>
-        </form>
-    </li>
-    @endauth
-</ul>
+                @auth
+                    <!-- Tombol Logout -->
+                    <li class="logout-container">
+                        <form action="{{ url('/logout') }}" method="POST">
+                            @csrf
+                            <button type="submit" class="logout-button">
+                                Logout
+                            </button>
+                        </form>
+                    </li>
+                @endauth
             </ul>
-	    </div>
-	</div>
-	<!-- /offcanvas nav -->
+            </ul>
+        </div>
+    </div>
+    <!-- /offcanvas nav -->
 
-    <section class="parallax_window_in" data-parallax="scroll" data-image-src="img/sub_header_about.jpg" data-natural-width="1400" data-natural-height="800">
+    <section class="parallax_window_in" data-parallax="scroll" data-image-src="img/header about.jpg"
+        data-natural-width="1400" data-natural-height="800">
         <div id="sub_content_in">
-            <h1>About Limmo</h1>
-            <p>"Usu habeo equidem sanctus no ex melius labitur"</p>
+            <h1>Ruangan</h1>
+            <p>Laboratorium Komputer Sekolah Vokasi IPB</p>
         </div>
     </section>
     <!-- /section -->
 
     <main>
-
-	    <div class="bg_color_gray">
-	        <div class="container margin_60">
-	            <div class="row justify-content-between">
-	                <div class="col-lg-6">
-	                    <h2 class="mt-lg-5 mb-4">Vim ridens<br>eleifend referrentur eu</h2>
-	                    <p>Ex has nihil liberavisse philosophia. Ne mazim quidam contentiones usu. Id nec <strong>causae periculis </strong>evertitur, stet menandri an pro, his argumentum appellantur eu. An laudem efficiendi has, utinam principes consequat id vel.</p>
-	                    <p>Ex graeco nostrud theophrastus nam, cum tibique reprimique ad. Mea omittam electram te, eu cum fastidii sapientem delicatissimi. Sed cu eripuit veritus propriae. An eam choro saperet ullamcorper, eam <strong>saperet rationibus</strong> ut. Cu usu tation quaeque vocibus, alterum torquatos persequeris te ius.</p>
-	                    <h3>Mission</h3>
-	                    <p>Ex graeco nostrud theophrastus nam, cum tibique reprimique ad. Mea omittam electram te, eu cum fastidii sapientem delicatissimi. Sed cu eripuit veritus propriae. An eam choro saperet ullamcorper, eam <strong>saperet rationibus</strong> ut. Cu usu tation quaeque vocibus, alterum torquatos persequeris te ius.</p>
-	                </div>
-	                <div class="col-lg-5 add_top_30">
-	                    <img src="img/about_1.jpg" alt="" class="img-fluid">
-	                </div>
-	            </div>
-	            <!-- End row -->
-	        </div>
-	    </div>
+        <!-- End row -->
+        </div>
+        </div>
         <!-- End container -->
 
-	    <div class="container margin_60_35">
-	        <div class="main_title">
-	            <h2>Meet Wilio Team</h2>
-	            <p>
-	                Usu habeo equidem sanctus no. Suas summo id sed, erat erant oporteat cu pri. In eum omnes molestie. Sed ad debet scaevola, ne mel lorem legendos.
-	            </p>
-	        </div>
-	        <!--Team Carousel -->
-	        <div class="row">
-	            <div class="owl-carousel owl-theme team-carousel">
-	                <div class="team-item">
-	                    <div class="team-item-img">
-	                        <img src="img/team/team-1.jpg" alt="">
-	                        <div class="team-item-detail">
-	                            <div class="team-item-detail-inner">
-	                                <p>Similique sunt culpa qui officia deserunt mollitia animi dolorum fuga.</p>
-	                                <ul class="social">
-	                                    <li><a href="#0"><i class="bi bi-facebook"></i></a></li>
-	                                    <li><a href="#0"><i class="bi bi-twitter"></i></a></li>
-	                                    <li><a href="#0"><i class="bi bi-linkedin"></i></a></li>
-	                                </ul>
-	                                <a href="#0" class="btn_1 white">View porfile</a>
-	                            </div>
-	                        </div>
-	                    </div>
-	                    <div class="team-item-info">
-	                        <h4>Mitchell Young</h4>
-	                        <p>CEO</p>
-	                    </div>
-	                </div>
-	                <!-- /team-item -->
-	                <div class="team-item">
-	                    <div class="team-item-img">
-	                        <img src="img/team/team-2.jpg" alt="">
-	                        <div class="team-item-detail">
-	                            <div class="team-item-detail-inner">
-	                                <p>Similique sunt culpa qui officia deserunt mollitia animi dolorum fuga.</p>
-	                                <ul class="social">
-	                                    <li><a href="#0"><i class="bi bi-facebook"></i></a></li>
-	                                    <li><a href="#0"><i class="bi bi-twitter"></i></a></li>
-	                                    <li><a href="#0"><i class="bi bi-linkedin"></i></a></li>
-	                                </ul>
-	                                <a href="#0" class="btn_1 white">View porfile</a>
-	                            </div>
-	                        </div>
-	                    </div>
-	                    <div class="team-item-info">
-	                        <h4>Ronald Green</h4>
-	                        <p>Business Strategy</p>
-	                    </div>
-	                </div>
-	                <!-- /team-item -->
-	                <div class="team-item">
-	                    <div class="team-item-img">
-	                        <img src="img/team/team-3.jpg" alt="">
-	                        <div class="team-item-detail">
-	                            <div class="team-item-detail-inner">
-	                                <p>Similique sunt culpa qui officia deserunt mollitia animi dolorum fuga.</p>
-	                                <ul class="social">
-	                                    <li><a href="#0"><i class="bi bi-facebook"></i></a></li>
-	                                    <li><a href="#0"><i class="bi bi-twitter"></i></a></li>
-	                                    <li><a href="#0"><i class="bi bi-linkedin"></i></a></li>
-	                                </ul>
-	                                <a href="#0" class="btn_1 white">View porfile</a>
-	                            </div>
-	                        </div>
-	                    </div>
-	                    <div class="team-item-info">
-	                        <h4>Carl Peppard</h4>
-	                        <p>General Manager</p>
-	                    </div>
-	                </div>
-	                <!-- /team-item -->
-	                <div class="team-item">
-	                    <div class="team-item-img">
-	                        <img src="img/team/team-4.jpg" alt="">
-	                        <div class="team-item-detail">
-	                            <div class="team-item-detail-inner">
-	                                <p>Similique sunt culpa qui officia deserunt mollitia animi dolorum fuga.</p>
-	                                <ul class="social">
-	                                    <li><a href="#0"><i class="bi bi-facebook"></i></a></li>
-	                                    <li><a href="#0"><i class="bi bi-twitter"></i></a></li>
-	                                    <li><a href="#0"><i class="bi bi-linkedin"></i></a></li>
-	                                </ul>
-	                                <a href="#0" class="btn_1 white">View porfile</a>
-	                            </div>
-	                        </div>
-	                    </div>
-	                    <div class="team-item-info">
-	                        <h4>Sandra Bullock</h4>
-	                        <p>Customer Support</p>
-	                    </div>
-	                </div>
-	                <!-- /team-item -->
-	            </div>
-	        </div>
-	        <!--End Team Carousel-->
-	    </div>
-	    <!-- End container -->
-	</main>
+        <div class="container margin_60_35">
+            <div class="main_title">
+                <h2>Jenis Ruangan</h2>
+                <p>
+                    Berikut adalah beberapa jenis ruangan yang tersedia untuk dipinjam sesuai kebutuhan Anda.
+                </p>
+            </div>
+            <!--Team Carousel -->
+            <div class="row">
+                <div class="owl-carousel owl-theme team-carousel">
+                    @foreach ($rooms as $room)
+                        <div class="team-item">
+                            <div class="team-item-img">
+                                <img src="{{ asset('storage/' . $room->image) }}" alt="{{ $room->name }}">
+                                <div class="team-item-detail">
+                                    <div class="team-item-detail-inner">
+                                        <p>{{ $room->description }}</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="team-item-info">
+                                <h4>{{ $room->name }}</h4>
+                                <p>Fasilitas: {{ implode(', ', $room->facility) }}</p>
+                                <p>Kapasitas: {{ $room->capacity }} orang</p>
+                            </div>
+                        </div>
+                    @endforeach
+                </div>
+            </div>
+            <!--End Team Carousel-->
+        </div>
+        <!-- End container -->
+    </main>
 
     <footer>
         <div class="container-fluid">
@@ -241,7 +166,8 @@
                     <p>© 2025 Sekolah Vokasi IPB University</a></p>
                 </div>
                 <div class="col-sm-6 text-md-end">
-                    <a class="btn_help btn" href="#modal-help" id="modal_h"><i class="bi bi-question-circle"> Help</i></a>
+                    <a class="btn_help btn" href="#modal-help" id="modal_h"><i class="bi bi-question-circle">
+                            Help</i></a>
                 </div>
             </div>
             <!-- /Row -->
@@ -260,11 +186,13 @@
         <form method="post" action="assets/help.php" id="helpform" autocomplete="off">
             <div class="modal-wrapper">
                 <div class="mb-3 form-floating">
-                    <input type="text" name="fullname" id="fullname" class="form-control" placeholder="Full Name">
+                    <input type="text" name="fullname" id="fullname" class="form-control"
+                        placeholder="Full Name">
                     <label for="fullname">Full Name</label>
                 </div>
                 <div class="mb-3 form-floating">
-                    <input type="email" name="email_help" id="email_help" class="form-control" placeholder="Email Address">
+                    <input type="email" name="email_help" id="email_help" class="form-control"
+                        placeholder="Email Address">
                     <label for="email_help">Email Address</label>
                 </div>
                 <div class="mb-3 form-floating">
@@ -272,10 +200,12 @@
                     <label for="message_help">Your Message</label>
                 </div>
                 <div class="mb-5 form-floating">
-                    <input class="form-control" type="text" name="verify_help" id="verify_help" placeholder="Are you human? 3 + 1 =">
+                    <input class="form-control" type="text" name="verify_help" id="verify_help"
+                        placeholder="Are you human? 3 + 1 =">
                     <label for="verify_help">Are you human? 3 + 1 =</label>
                 </div>
-                <div class="text-center submit"><input type="submit" value="Submit" class="btn_1" id="submit-help"></div>
+                <div class="text-center submit"><input type="submit" value="Submit" class="btn_1"
+                        id="submit-help"></div>
             </div>
         </form>
     </div>
@@ -288,26 +218,26 @@
     <script src="js/parallax.min.js"></script>
     <script src="js/owl-carousel.js"></script>
     <script>
-    "use strict";
-    $(".team-carousel").owlCarousel({
-        items: 1,
-        loop: false,
-        margin: 10,
-        autoplay: false,
-        smartSpeed: 300,
-        responsiveClass: false,
-        responsive: {
-            320: {
-                items: 1,
-            },
-            768: {
-                items: 2,
-            },
-            1000: {
-                items: 3,
+        "use strict";
+        $(".team-carousel").owlCarousel({
+            items: 1,
+            loop: false,
+            margin: 10,
+            autoplay: false,
+            smartSpeed: 300,
+            responsiveClass: false,
+            responsive: {
+                320: {
+                    items: 1,
+                },
+                768: {
+                    items: 2,
+                },
+                1000: {
+                    items: 3,
+                }
             }
-        }
-    });
+        });
     </script>
 </body>
 

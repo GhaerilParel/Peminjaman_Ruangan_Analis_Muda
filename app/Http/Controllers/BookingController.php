@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Booking;
+use App\Models\Room; // Tambahkan model Room di bagian atas
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\BookingStatusUpdated;
@@ -164,6 +165,12 @@ class BookingController extends Controller
         ]);
 
         return redirect()->route('status.peminjaman')->with('success', 'Booking berhasil dihapus (status: rejected)!');
+    }
+
+    public function create()
+    {
+        $rooms = Room::all(); // Ambil semua data ruangan
+        return view('booking.create', compact('rooms')); // Kirim data ke view
     }
 }
 

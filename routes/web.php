@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\MailController;
 use App\Http\Controllers\BookingController;
+use App\Http\Controllers\AboutController;
 
 Route::get('/', function () {
     return view('index');
@@ -51,3 +52,5 @@ Route::middleware(['auth:web'])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index']);
     Route::get('/user/dashboard', [UserController::class, 'dashboard'])->name('user.dashboard');
 });
+
+Route::get('/about', [AboutController::class, 'index'])->name('about');

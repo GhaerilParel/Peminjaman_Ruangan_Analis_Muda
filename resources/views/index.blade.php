@@ -86,8 +86,9 @@
                 <hr>
                 <ul>
                     <li><a href="{{ url('/index') }}" class="animated_link">Beranda</a></li>
-                    <li><a href="../html/theme/templates/admin/404.html" class="animated_link ">Template Surat</a></li>
-                    <li><a href="/status-peminjaman" class="animated_link ">Status Peminjaman</a>
+                    <li><a href="https://drive.google.com/file/d/1Lc3HoaGEHCx_huejyJ2EM1ybRG6v0eai/view?usp=sharing"
+                            class="animated_link ">Template Surat</a></li>
+                    <li><a href="{{ route('status.peminjaman') }}" class="animated_link ">Status Peminjaman</a>
                     </li>
                 </ul>
                 <hr>

@@ -51,7 +51,7 @@ class AuthController extends Controller
     return redirect()->route('login')->with('success', 'Registrasi berhasil! Silakan login.');
 }
 
-    // Login
+    // Login untuk user biasa
     public function login(Request $request)
     {
         $credentials = $request->validate([
@@ -72,14 +72,13 @@ class AuthController extends Controller
             return redirect()->intended('/index')->with('success', 'Login berhasil!');
         }
 
-        Auth::guard('web')->logout();
         return back()->withErrors(['email' => 'Email atau password salah!'])->withInput();
     }
 
-    // Logout
+    // Logout untuk user biasa
     public function logout(Request $request)
     {
-        Auth::logout();
+        Auth::guard('web')->logout();
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 

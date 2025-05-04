@@ -27,6 +27,7 @@ class AdminPanelProvider extends PanelProvider
             ->id('admin')
             ->path('admin')
             ->login()
+            // ->brand('<img src="/path/to/your/logo.png" alt="Logo" style="height: 40px;">') // Baris ini dihapus
             ->colors([
                 'primary' => Color::Amber,
             ])
@@ -52,7 +53,7 @@ class AdminPanelProvider extends PanelProvider
                 DispatchServingFilamentEvent::class,
             ])
             ->authMiddleware([
-                Authenticate::class . ':admin', // Gunakan guard admin
+                Authenticate::class . ':admin',
             ]);
     }
 }

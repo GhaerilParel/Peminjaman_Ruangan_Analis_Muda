@@ -44,7 +44,7 @@ return [
         'admin' => [
             'driver' => 'session',
             'provider' => 'admins',
-            'session' => 'admin_session', // Tambahkan ini untuk memisahkan sesi admin
+            'session' => 'admin_session', // Gunakan sesi terpisah untuk admin
         ],
     ],
 

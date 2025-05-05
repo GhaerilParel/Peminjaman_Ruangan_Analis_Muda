@@ -143,7 +143,7 @@
                                 <td class="px-4 py-2">{{ $booking->waktu_mulai }}</td>
                                 <td class="px-4 py-2">{{ $booking->waktu_selesai }}</td>
                                 <td class="px-4 py-2">{{ $booking->nama }}</td>
-                                <td class="px-4 py-2">{{ $booking->room_type }}</td>
+                                <td class="px-4 py-2">{{ $booking->room->name }}</td>
                                 <td class="px-4 py-2">
                                     @if ($booking->status === 'approved')
                                         <span

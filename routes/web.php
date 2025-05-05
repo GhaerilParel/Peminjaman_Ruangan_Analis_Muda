@@ -6,12 +6,10 @@ use App\Http\Controllers\MailController;
 use App\Http\Controllers\BookingController;
 use App\Http\Controllers\AboutController;
 
-Route::get('/', function () {
-    return view('index');
-})->name('index');
+Route::get('/', [BookingController::class, 'create'])->name('index');
 
 // Halaman yang bisa diakses tanpa login
-Route::view('/index', 'index')->name('index');
+Route::get('/index', [BookingController::class, 'create'])->name('index');
 Route::view('/about', 'about')->name('about');
 Route::view('/contact', 'contact')->name('contact');
 Route::view('/mail', 'mail')->name('mail');

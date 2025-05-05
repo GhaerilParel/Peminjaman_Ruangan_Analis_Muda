@@ -24,32 +24,17 @@
                     @csrf
                     @method('PUT')
 
-                    <div class="mb-4">
-                        <label for="room_type" class="form-label fw-bold">Tipe Ruangan</label>
-                        <select name="room_type" id="room_type" class="form-select" required>
-                            <option value="1" {{ old('room_type', $booking->room_type) == 1 ? 'selected' : '' }}>CB
-                                Pemrograman</option>
-                            <option value="2" {{ old('room_type', $booking->room_type) == 2 ? 'selected' : '' }}>CB
-                                K70-1</option>
-                            <option value="3" {{ old('room_type', $booking->room_type) == 3 ? 'selected' : '' }}>CA RPL
-                            </option>
-                            <option value="4" {{ old('room_type', $booking->room_type) == 4 ? 'selected' : '' }}>CA KOM
-                                1</option>
-                            <option value="5" {{ old('room_type', $booking->room_type) == 5 ? 'selected' : '' }}>CA KOM
-                                2</option>
-                            <option value="6" {{ old('room_type', $booking->room_type) == 6 ? 'selected' : '' }}>CB
-                                Jaringan</option>
-                            <option value="7" {{ old('room_type', $booking->room_type) == 7 ? 'selected' : '' }}>CB KOM
-                                1</option>
-                            <option value="8" {{ old('room_type', $booking->room_type) == 8 ? 'selected' : '' }}>CB KOM
-                                2</option>
-                            <option value="9" {{ old('room_type', $booking->room_type) == 9 ? 'selected' : '' }}>CB
-                                KOM 3</option>
-                            <option value="10" {{ old('room_type', $booking->room_type) == 10 ? 'selected' : '' }}>CB
-                                KOM 4</option>
-                            <option value="11" {{ old('room_type', $booking->room_type) == 11 ? 'selected' : '' }}>CB
-                                KOM 5</option>
+                    <div class="form-floating">
+                        <select class="form-select required" id="room_type" name="room_type" aria-label="Room type">
+                            <option value="" disabled>Pilih Ruangan</option>
+                            @foreach ($rooms as $room)
+                                <option value="{{ $room->id }}"
+                                    {{ $booking->room_type == $room->id ? 'selected' : '' }}>
+                                    {{ $room->name }}
+                                </option>
+                            @endforeach
                         </select>
+                        <label for="room_type">Ruangan</label>
                     </div>
 
                     <div class="row">

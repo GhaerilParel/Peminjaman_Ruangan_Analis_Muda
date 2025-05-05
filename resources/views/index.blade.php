@@ -140,20 +140,11 @@
                             <div class="row justify-content-center">
                                 <div class="col-md-10 mb-3">
                                     <div class="form-floating">
-                                        <select class="form-select required" id="room_type_1" name="room_type"
-                                            aria-label="Room type">
-                                            <option value selected>Pilih Ruangan</option>
-                                            <option value="1">CB Pemrograman</option>
-                                            <option value="2">CB K70-1</option>
-                                            <option value="3">CA RPL</option>
-                                            <option value="4">CA KOM 1</option>
-                                            <option value="5">CA KOM 2</option>
-                                            <option value="6">CB KOM Jaringan</option>
-                                            <option value="7">CB KOM 1</option>
-                                            <option value="8">CB KOM 2</option>
-                                            <option value="9">CB KOM 3</option>
-                                            <option value="10">CB KOM 4</option>
-                                            <option value="11">CB KOM 5</option>
+                                        <select class="form-select required" id="room_type_1" name="room_type" aria-label="Room type">
+                                            <option value="" selected>Pilih Ruangan</option>
+                                            @foreach ($rooms as $room)
+                                                <option value="{{ $room->id }}">{{ $room->name }}</option>
+                                            @endforeach
                                         </select>
                                         <label for="room_type_1">Ruangan</label>
                                     </div>
@@ -161,31 +152,6 @@
                             </div>
                             <div class="row justify-content-center">
                                 <div class="col-md-12">
-                                    <!-- <div class="clearfix position-relative mb-3" id="inline-calendar">
-           
-            <input type="date" name="booking_date" id="dates" class="required form-control" placeholder="MM/DD/YYYY" required>
-
-            <div id="calendar" style="margin-top: 20px;"></div>
-            <div id="calendar-container" class="calendar-container">
-                <div class="calendar-header">
-                    <button id="prev-month" class="btn btn-primary">&lt;</button>
-                    <span id="current-month-year"></span>
-                    <button id="next-month" class="btn btn-primary">&gt;</button>
-                </div>
-                <div class="calendar-body">
-                    <div class="calendar-days">
-                        <div>Sun</div>
-                        <div>Mon</div>
-                        <div>Tue</div>
-                        <div>Wed</div>
-                        <div>Thu</div>
-                        <div>Fri</div>
-                        <div>Sat</div>
-                    </div>
-                    <div id="calendar-dates" class="calendar-dates"></div>
-                </div>
-            </div>
-        </div> -->
                                     <div id="calendar-container" class="calendar-container">
                                         <!-- input date -->
                                         <input type="date" name="booking_date" class="required form-control"

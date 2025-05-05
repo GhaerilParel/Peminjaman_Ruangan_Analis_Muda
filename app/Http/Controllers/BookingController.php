@@ -14,11 +14,11 @@ class BookingController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'room_type'     => 'required',
-            'booking_date'  => 'required|date',
-            'waktu_mulai'   => 'required|date_format:H:i|after_or_equal:06:00|before_or_equal:20:00',
+            'room_type' => 'required|exists:rooms,id', // Pastikan room_type ada di tabel rooms
+            'booking_date' => 'required|date',
+            'waktu_mulai' => 'required|date_format:H:i|after_or_equal:06:00|before_or_equal:20:00',
             'waktu_selesai' => 'required|date_format:H:i|after:waktu_mulai|before_or_equal:20:00',
-            'file'          => 'nullable|mimes:pdf|max:2048',
+            'file' => 'nullable|mimes:pdf|max:2048',
         ]);
 
         // Simpan file jika ada
@@ -41,23 +41,23 @@ class BookingController extends Controller
         }
 
         // Simpan data booking
-        Booking::create([
-            'room_type'     => $request->room_type,
-            'booking_date'  => $request->booking_date,
-            'jumlah_orang'  => $request->jumlah_orang,
-            'nama'          => $request->firstname,
-            'nim'           => $request->nim,
-            'jurusan'       => $request->jurusan,
-            'email'         => auth()->user()->email, // Gunakan email pengguna yang login
-            'no_telepon'    => $request->telephone,
-            'waktu_mulai'   => $request->waktu_mulai,
-            'waktu_selesai' => $request->waktu_selesai,
-            'alasan'        => $request->review,
-            'file'          => $filePath ?? null,
-            'status'        => 'pending',
-        ]);
+    Booking::create([
+        'room_type' => $request->room_type, // Simpan id ruangan yang dipilih
+        'booking_date' => $request->booking_date,
+        'jumlah_orang' => $request->jumlah_orang,
+        'nama' => $request->firstname,
+        'nim' => $request->nim,
+        'jurusan' => $request->jurusan,
+        'email' => auth()->user()->email,
+        'no_telepon' => $request->telephone,
+        'waktu_mulai' => $request->waktu_mulai,
+        'waktu_selesai' => $request->waktu_selesai,
+        'alasan' => $request->review,
+        'file' => $request->file('file') ? $request->file('file')->store('uploads', 'public') : null,
+        'status' => 'pending',
+    ]);
 
-        return redirect()->back()->with('success', 'Booking berhasil disimpan!');
+    return redirect()->back()->with('success', 'Booking berhasil disimpan!');
     }
 
     // Controller untuk mendapatkan data tanggal yang dibooking berdasarkan ruangan
@@ -98,11 +98,10 @@ class BookingController extends Controller
     public function update(Request $request, Booking $booking)
     {
         $request->validate([
-            'room_type'     => 'required',
-            'booking_date'  => 'required|date',
-            'waktu_mulai'   => 'required|date_format:H:i|after_or_equal:06:00|before_or_equal:20:00',
+            'room_type' => 'required|exists:rooms,id', // Validasi ruangan harus ada di tabel rooms
+            'booking_date' => 'required|date',
+            'waktu_mulai' => 'required|date_format:H:i|after_or_equal:06:00|before_or_equal:20:00',
             'waktu_selesai' => 'required|date_format:H:i|after:waktu_mulai|before_or_equal:20:00',
-            'file'          => 'nullable|mimes:pdf|max:2048',
         ]);
 
         // Simpan file jika ada
@@ -128,18 +127,17 @@ class BookingController extends Controller
 
         // Update data booking
         $booking->update([
-            'room_type'     => $request->room_type,
-            'booking_date'  => $request->booking_date,
-            'jumlah_orang'  => $request->jumlah_orang,
-            'nama'          => $request->firstname,
-            'nim'           => $request->nim,
-            'jurusan'       => $request->jurusan,
-            'email'         => $request->email,
-            'no_telepon'    => $request->telephone,
-            'waktu_mulai'   => $request->waktu_mulai,
+            'room_type' => $request->room_type,
+            'booking_date' => $request->booking_date,
+            'waktu_mulai' => $request->waktu_mulai,
             'waktu_selesai' => $request->waktu_selesai,
-            'alasan'        => $request->review,
-            'status'        => 'pending', // Set status menjadi pending setelah pengeditan
+            'jumlah_orang' => $request->jumlah_orang,
+            'nama' => $request->firstname,
+            'nim' => $request->nim,
+            'jurusan' => $request->jurusan,
+            'email' => $request->email,
+            'no_telepon' => $request->telephone,
+            'alasan' => $request->review,
         ]);
 
         // Ambil data terbaru dari database
@@ -155,7 +153,8 @@ class BookingController extends Controller
 
     public function edit(Booking $booking)
     {
-        return view('edit', compact('booking')); // Arahkan ke view edit
+        $rooms = Room::all(); // Ambil semua data ruangan
+        return view('edit', compact('booking', 'rooms')); // Kirim data booking dan rooms ke view
     }
 
     public function reject(Booking $booking)
@@ -170,7 +169,7 @@ class BookingController extends Controller
     public function create()
     {
         $rooms = Room::all(); // Ambil semua data ruangan
-        return view('booking.create', compact('rooms')); // Kirim data ke view
+        return view('index', compact('rooms')); // Kirim data ke view
     }
 }
 

@@ -5,6 +5,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\MailController;
 use App\Http\Controllers\BookingController;
 use App\Http\Controllers\AboutController;
+use App\Http\Controllers\RoomController;
 
 Route::get('/', [BookingController::class, 'create'])->name('index');
 
@@ -52,3 +53,5 @@ Route::middleware(['auth:web'])->group(function () {
 });
 
 Route::get('/about', [AboutController::class, 'index'])->name('about');
+
+Route::get('/api/rooms/recommendation', [RoomController::class, 'getRecommendations'])->name('api.rooms.recommendation');

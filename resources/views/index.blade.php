@@ -140,7 +140,8 @@
                             <div class="row justify-content-center">
                                 <div class="col-md-10 mb-3">
                                     <div class="form-floating">
-                                        <select class="form-select required" id="room_type_1" name="room_type" aria-label="Room type">
+                                        <select class="form-select required" id="room_type_1" name="room_type"
+                                            aria-label="Room type">
                                             <option value="" selected>Pilih Ruangan</option>
                                             @foreach ($rooms as $room)
                                                 <option value="{{ $room->id }}">{{ $room->name }}</option>
@@ -546,16 +547,88 @@
                             </div>
                             <div class="row justify-content-center">
                                 <div class="col-sm-6">
-                                    <div class="mb-3 qty-buttons d-flex align-items-center">
-                                        <input type="button" value="+" class="qtyplus btn btn-primary"
-                                            name="Jumlah Orang">
-                                        <input type="text" name="jumlah_orang" id="jumlah_orang" value="1"
-                                            class="qty form-control required mx-2 flex-grow-1"
-                                            placeholder="Jumlah Orang"
-                                            style="width: 100%; text-align: left; padding-left: 10px;">
-                                        <input type="button" value="-" class="qtyminus btn btn-primary"
-                                            name="Jumlah Orang">
-                                    </div>
+                                    <!-- Input Jumlah Orang -->
+<div class="mb-3 qty-buttons d-flex align-items-center">
+    <input type="button" value="+" class="qtyplus btn btn-primary" name="Jumlah Orang">
+    <input type="text" name="jumlah_orang" id="jumlah_orang" value="1"
+        class="qty form-control required mx-2 flex-grow-1"
+        placeholder="Jumlah Orang"
+        style="width: 100%; text-align: left; padding-left: 10px;">
+    <input type="button" value="-" class="qtyminus btn btn-primary" name="Jumlah Orang">
+</div>
+
+<!-- Button to open modal -->
+<div class="text-center mt-3">
+    <button type="button" class="btn btn-info" id="recommendationButton" data-bs-toggle="modal" data-bs-target="#roomRecommendationModal">
+        Rekomendasi Ruangan
+    </button>
+</div>
+
+<!-- Modal for Room Recommendations -->
+<div class="modal fade" id="roomRecommendationModal" tabindex="-1" aria-labelledby="roomRecommendationModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="roomRecommendationModalLabel">Rekomendasi Ruangan</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Nama Ruangan</th>
+                            <th>Kapasitas</th>
+                        </tr>
+                    </thead>
+                    <tbody id="roomRecommendationBody">
+                        <!-- Room recommendations will be dynamically inserted here -->
+                    </tbody>
+                </table>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const jumlahOrangInput = document.getElementById("jumlah_orang");
+        const recommendationButton = document.getElementById("recommendationButton");
+        const roomRecommendationBody = document.getElementById("roomRecommendationBody");
+
+        recommendationButton.addEventListener("click", async function () {
+            const jumlahOrang = parseInt(jumlahOrangInput.value);
+
+            if (jumlahOrang > 0) {
+                // Fetch room recommendations from the database
+                const response = await fetch(`{{ route('api.rooms.recommendation') }}?capacity=${jumlahOrang}`);
+                const recommendedRooms = await response.json();
+
+                // Populate the table with recommended rooms
+                roomRecommendationBody.innerHTML = "";
+
+                if (recommendedRooms.length > 0) {
+                    recommendedRooms.forEach(room => {
+                        roomRecommendationBody.innerHTML += `
+                            <tr>
+                                <td>${room.name}</td>
+                                <td>${room.capacity}</td>
+                            </tr>
+                        `;
+                    });
+                } else {
+                    roomRecommendationBody.innerHTML = `
+                        <tr>
+                            <td colspan="2" class="text-center">Tidak ada ruangan yang sesuai dengan jumlah orang.</td>
+                        </tr>
+                    `;
+                }
+            }
+        });
+    });
+</script>
                                 </div>
                             </div>
 
@@ -1272,6 +1345,61 @@
             }
         }
     </style>
+
+    <div class="modal fade" id="roomRecommendationModal" tabindex="-1"
+        aria-labelledby="roomRecommendationModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="roomRecommendationModalLabel">Rekomendasi Ruangan</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body" id="roomRecommendationBody">
+                    <!-- Rekomendasi ruangan akan dimasukkan di sini -->
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const jumlahOrangInput = document.getElementById("jumlah_orang");
+            const roomRecommendationModal = new bootstrap.Modal(document.getElementById("roomRecommendationModal"));
+
+            jumlahOrangInput.addEventListener("input", async function() {
+                const jumlahOrang = parseInt(jumlahOrangInput.value);
+
+                if (jumlahOrang > 0) {
+                    // Panggil API untuk mendapatkan rekomendasi ruangan
+                    const response = await fetch(
+                        `{{ route('api.rooms.recommendation') }}?capacity=${jumlahOrang}`);
+                    const recommendedRooms = await response.json();
+
+                    // Tampilkan rekomendasi di modal
+                    const modalBody = document.getElementById("roomRecommendationBody");
+                    modalBody.innerHTML = "";
+
+                    if (recommendedRooms.length > 0) {
+                        recommendedRooms.forEach(room => {
+                            modalBody.innerHTML += `
+                            <p><strong>${room.name}</strong> - Kapasitas: ${room.capacity}</p>
+                        `;
+                        });
+                    } else {
+                        modalBody.innerHTML =
+                            "<p>Tidak ada ruangan yang sesuai dengan jumlah orang.</p>";
+                    }
+
+                    // Tampilkan modal
+                    roomRecommendationModal.show();
+                }
+            });
+        });
+    </script>
 
 </body>
 

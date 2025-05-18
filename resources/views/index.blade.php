@@ -93,7 +93,7 @@
                 </ul>
                 <hr>
                 <ul>
-                    <li><a href="{{ url('/about') }}" class="animated_link">About</a></li>
+                    <li><a href="{{ url('/about') }}" class="animated_link">Ruangan</a></li>
                     <li><a href="{{ url('/contact') }}" class="animated_link">Contacts</a></li>
                 </ul>
                 <hr>
@@ -155,8 +155,7 @@
                                 <div class="col-md-6">
                                     <label for="selected-date" class="form-label fw-bold text-center d-block">Pilih
                                         Tanggal</label>
-                                    <input type="date" id="selected-date" name="booking_date"
-                                        class="form-control mx-auto"
+                                        <input type="date" id="selected-date" name="booking_date" class="form-control mx-auto"
                                         style="width: 100%; max-width: 400px; text-align: center;">
                                 </div>
                             </div>
@@ -323,18 +322,17 @@
                                 }
 
                                 // Navigasi bulan sebelumnya
-                                prevMonthBtn.addEventListener("click", (event) => {
-                                    event.preventDefault(); // Mencegah aksi default tombol
-                                    currentDate.setMonth(currentDate.getMonth() - 1); // Geser ke bulan sebelumnya
-                                    renderCalendar(); // Render ulang kalender
+                                prevMonthBtn.addEventListener("click", () => {
+                                    currentDate.setMonth(currentDate.getMonth() - 1);
+                                    renderCalendar();
                                 });
 
                                 // Navigasi bulan berikutnya
-                                nextMonthBtn.addEventListener("click", (event) => {
-                                    event.preventDefault(); // Mencegah aksi default tombol
-                                    currentDate.setMonth(currentDate.getMonth() + 1); // Geser ke bulan berikutnya
-                                    renderCalendar(); // Render ulang kalender
-                                });
+nextMonthBtn.addEventListener("click", (event) => {
+    event.preventDefault(); // Mencegah aksi default tombol
+    currentDate.setMonth(currentDate.getMonth() + 1); // Geser ke bulan berikutnya
+    renderCalendar(); // Render ulang kalender
+});
 
                                 // Event listener untuk room_type
                                 roomTypeSelect.addEventListener("change", () => {
@@ -344,11 +342,11 @@
 
                                 // Sinkronisasi input tanggal dengan klik pada kalender
                                 calendarDates.addEventListener("click", function(event) {
-                                    const clickedDate = event.target.getAttribute("data-date");
-                                    if (clickedDate) {
-                                        document.getElementById("selected-date").value = clickedDate; // Sinkronisasi nilai
-                                    }
-                                });
+    const clickedDate = event.target.getAttribute("data-date");
+    if (clickedDate) {
+        document.getElementById("selected-date").value = clickedDate; // Sinkronisasi nilai
+    }
+});
 
                                 // Sinkronisasi input tanggal dengan kalender
                                 selectedDateInput.addEventListener("change", function() {
@@ -532,95 +530,91 @@
                                             name="Jumlah Orang">
                                     </div>
                                     <!-- Tombol Rekomendasi Ruangan -->
-                                    <button type="button" class="btn btn-primary mt-3" id="recommend-room-btn"
-                                        data-bs-toggle="modal" data-bs-target="#recommendRoomModal">
-                                        Rekomendasi Ruangan
-                                    </button>
+<button type="button" class="btn btn-primary mt-3" id="recommend-room-btn" data-bs-toggle="modal" data-bs-target="#recommendRoomModal">
+    Rekomendasi Ruangan
+</button>
                                 </div>
                             </div>
                         </div>
 
-                        <!-- Modal Rekomendasi Ruangan -->
-                        <div class="modal fade" id="recommendRoomModal" tabindex="-1"
-                            aria-labelledby="recommendRoomModalLabel" aria-hidden="true">
-                            <div class="modal-dialog modal-dialog-centered modal-lg">
-                                <div class="modal-content">
-                                    <div class="modal-header bg-primary text-white">
-                                        <h5 class="modal-title" id="recommendRoomModalLabel">Rekomendasi Ruangan</h5>
-                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                            aria-label="Close"></button>
-                                    </div>
-                                    <div class="modal-body">
-                                        <table class="table table-bordered table-striped">
-                                            <thead class="table-primary">
-                                                <tr>
-                                                    <th>Nama Ruangan</th>
-                                                    <th>Kapasitas</th>
-                                                    <th>Fasilitas</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody id="recommended-rooms-list">
-                                                <!-- Daftar ruangan akan dimuat di sini -->
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                    <div class="modal-footer">
-                                        <button type="button" class="btn btn-secondary"
-                                            data-bs-dismiss="modal">Tutup</button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+<!-- Modal Rekomendasi Ruangan -->
+<div class="modal fade" id="recommendRoomModal" tabindex="-1" aria-labelledby="recommendRoomModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title" id="recommendRoomModalLabel">Rekomendasi Ruangan</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <table class="table table-bordered table-striped">
+                    <thead class="table-primary">
+                        <tr>
+                            <th>Nama Ruangan</th>
+                            <th>Kapasitas</th>
+                            <th>Fasilitas</th>
+                        </tr>
+                    </thead>
+                    <tbody id="recommended-rooms-list">
+                        <!-- Daftar ruangan akan dimuat di sini -->
+                    </tbody>
+                </table>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
+            </div>
+        </div>
+    </div>
+</div>
 
-                        <script>
-                            document.addEventListener("DOMContentLoaded", function() {
-                                const recommendRoomBtn = document.getElementById("recommend-room-btn");
-                                const jumlahOrangInput = document.getElementById("jumlah_orang");
-                                const recommendedRoomsList = document.getElementById("recommended-rooms-list");
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const recommendRoomBtn = document.getElementById("recommend-room-btn");
+        const jumlahOrangInput = document.getElementById("jumlah_orang");
+        const recommendedRoomsList = document.getElementById("recommended-rooms-list");
 
-                                recommendRoomBtn.addEventListener("click", async function() {
-                                    const jumlahOrang = jumlahOrangInput.value;
+        recommendRoomBtn.addEventListener("click", async function () {
+            const jumlahOrang = jumlahOrangInput.value;
 
-                                    // Validasi input jumlah orang
-                                    if (!jumlahOrang || isNaN(jumlahOrang) || jumlahOrang <= 0) {
-                                        alert("Masukkan jumlah orang yang valid!");
-                                        return;
-                                    }
+            // Validasi input jumlah orang
+            if (!jumlahOrang || isNaN(jumlahOrang) || jumlahOrang <= 0) {
+                alert("Masukkan jumlah orang yang valid!");
+                return;
+            }
 
-                                    // Ambil data ruangan dari API
-                                    try {
-                                        const response = await fetch(`/rooms/recommendation?capacity=${jumlahOrang}`);
-                                        const rooms = await response.json();
+            // Ambil data ruangan dari API
+            try {
+                const response = await fetch(`/rooms/recommendation?capacity=${jumlahOrang}`);
+                const rooms = await response.json();
 
-                                        // Kosongkan daftar sebelumnya
-                                        recommendedRoomsList.innerHTML = "";
+                // Kosongkan daftar sebelumnya
+                recommendedRoomsList.innerHTML = "";
 
-                                        if (rooms.length > 0) {
-                                            // Tambahkan ruangan ke tabel
-                                            rooms.forEach(room => {
-                                                const row = document.createElement("tr");
-                                                row.innerHTML = `
+                if (rooms.length > 0) {
+                    // Tambahkan ruangan ke tabel
+                    rooms.forEach(room => {
+                        const row = document.createElement("tr");
+                        row.innerHTML = `
                             <td>${room.name}</td>
                             <td>${room.capacity}</td>
                             <td>${room.facility}</td>
                         `;
-                                                recommendedRoomsList.appendChild(row);
-                                            });
-                                        } else {
-                                            // Tampilkan pesan jika tidak ada ruangan yang cocok
-                                            const row = document.createElement("tr");
-                                            row.innerHTML = `
+                        recommendedRoomsList.appendChild(row);
+                    });
+                } else {
+                    // Tampilkan pesan jika tidak ada ruangan yang cocok
+                    const row = document.createElement("tr");
+                    row.innerHTML = `
                         <td colspan="3" class="text-center text-danger">Tidak ada ruangan yang cocok.</td>
                     `;
-                                            recommendedRoomsList.appendChild(row);
-                                        }
-                                    } catch (error) {
-                                        console.error("Gagal mengambil data ruangan:", error);
-                                        alert("Terjadi kesalahan saat mengambil data ruangan.");
-                                    }
-                                });
-                            });
-                        </script>
+                    recommendedRoomsList.appendChild(row);
+                }
+            } catch (error) {
+                console.error("Gagal mengambil data ruangan:", error);
+                alert("Terjadi kesalahan saat mengambil data ruangan.");
+            }
+        });
+    });
+</script>
 
                         <div class="submit step">
                             <div class="question_title">
@@ -1234,16 +1228,16 @@
     </style>
 
     <script>
-        document.getElementById('next-button').addEventListener('click', function() {
-            @auth
-            // Jika user sudah login, lanjutkan ke langkah berikutnya
-            document.querySelector('.forward').click();
-        @else
-            // Jika user belum login, arahkan ke halaman login
-            const loginModal = new bootstrap.Modal(document.getElementById('loginModal'));
-            loginModal.show();
-        @endauth
-        });
+        document.getElementById('next-button').addEventListener('click', function () {
+    @auth
+    // Jika user sudah login, lanjutkan ke langkah berikutnya
+    document.querySelector('.forward').click();
+    @else
+    // Jika user belum login, arahkan ke halaman login
+    const loginModal = new bootstrap.Modal(document.getElementById('loginModal'));
+    loginModal.show();
+    @endauth
+});
     </script>
 
     <script>

@@ -9,14 +9,14 @@
     <meta name="author" content="Ansonika">
     <title>Peminjaman Ruangan Laboratorium Komputer Sekolah Vokasi IPB University</title>
 
-    <!-- Favicons-->
-    <link rel="shortcut icon" href="img/favicon.ico" type="image/x-icon">
-    <link rel="apple-touch-icon" type="image/x-icon" href="img/apple-touch-icon-57x57-precomposed.png">
-    <link rel="apple-touch-icon" type="image/x-icon" sizes="72x72" href="img/apple-touch-icon-72x72-precomposed.png">
-    <link rel="apple-touch-icon" type="image/x-icon" sizes="114x114"
-        href="img/apple-touch-icon-114x114-precomposed.png">
-    <link rel="apple-touch-icon" type="image/x-icon" sizes="144x144"
-        href="img/apple-touch-icon-144x144-precomposed.png">
+     <!-- Favicons-->
+     <link rel="shortcut icon" href="img/apple-touch-icon-114x114-precomposed.png" type="image/x-icon">
+     <link rel="apple-touch-icon" type="image/x-icon" href="img/apple-touch-icon-57x57-precomposed.png">
+     <link rel="apple-touch-icon" type="image/x-icon" sizes="72x72" href="img/apple-touch-icon-72x72-precomposed.png">
+     <link rel="apple-touch-icon" type="image/x-icon" sizes="114x114"
+         href="img/apple-touch-icon-114x114-precomposed.png">
+     <link rel="apple-touch-icon" type="image/x-icon" sizes="144x144"
+         href="img/apple-touch-icon-144x144-precomposed.png">
 
     <!-- GOOGLE WEB FONT -->
     <link rel="preconnect" href="https://fonts.gstatic.com">
@@ -87,7 +87,7 @@
             </ul>
             <hr>
             <ul>
-                <li><a href="{{ url('/about') }}" class="animated_link">About</a></li>
+                <li><a href="{{ url('/about') }}" class="animated_link">Ruangan</a></li>
                 <li><a href="{{ url('/contact') }}" class="animated_link">Contacts</a></li>
             </ul>
             <hr>

@@ -67,6 +67,13 @@ class AuthController extends Controller
             'password' => 'required',
         ]);
 
+        // Periksa apakah email ada di database
+        $user = User::where('email', $request->email)->first();
+        if (!$user) {
+            return back()->withErrors(['email' => 'Email belum terdaftar!'])->withInput();
+        }
+
+        // Periksa kredensial login
         if (Auth::guard('web')->attempt($credentials)) {
             $request->session()->regenerate();
             return redirect()->intended('/index')->with('success', 'Login berhasil!');

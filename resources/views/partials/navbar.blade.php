@@ -46,7 +46,7 @@
         </ul>
         <hr>
         <ul>
-            <li><a href="{{ route('about') }}" class="animated_link">About</a></li>
+            <li><a href="{{ route('about') }}" class="animated_link">Ruangan</a></li>
             <li><a href="{{ route('contact') }}" class="animated_link">Contacts</a></li>
         </ul>
         <hr>

@@ -44,7 +44,7 @@ Route::get('/status-peminjaman', [BookingController::class, 'status'])->name('st
 Route::get('/booking/{booking}/edit', [BookingController::class, 'edit'])->name('booking.edit');
 Route::put('/booking/{booking}', [BookingController::class, 'update'])->name('booking.update');
 Route::put('/booking/{booking}/reject', [BookingController::class, 'reject'])->name('booking.reject');
-Route::delete('/booking/{booking}', [BookingController::class, 'destroy'])->name('booking.destroy');
+Route::delete('/booking/{id}', [BookingController::class, 'destroy'])->name('booking.destroy');
 
 
 Route::get('/about', [AboutController::class, 'index'])->name('about');

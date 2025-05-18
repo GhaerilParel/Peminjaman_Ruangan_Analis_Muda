@@ -106,21 +106,18 @@
                     </div>
                 </form>
 
-                <div class="d-flex justify-content-between mt-4">
-                    <!-- Reject Form -->
-                    <form action="{{ route('booking.reject', $booking->id) }}" method="POST"
-                        onsubmit="return confirm('Apakah Anda yakin ingin menolak booking ini?');">
-                        @csrf
-                        @method('PUT')
-                        <button type="submit" class="btn btn-danger btn-lg px-5">
-                            <i class="fas fa-trash-alt"></i> Hapus Booking
-                        </button>
-                    </form>
-
+                <div class="mt-8 flex justify-center space-x-4">
                     <!-- Update Form -->
-                    <button type="submit" form="updateForm" class="btn btn-primary btn-lg px-5">
+                    <button type="submit" form="updateForm"
+                        class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 px-6 rounded-lg shadow-md transition duration-300">
                         <i class="fas fa-save"></i> Simpan Perubahan
                     </button>
+
+                    <!-- Back Button -->
+                    <a href="{{ url()->previous() }}"
+                        class="bg-gray-500 hover:bg-gray-600 text-white font-bold py-3 px-6 rounded-lg shadow-md transition duration-300">
+                        <i class="fas fa-arrow-left"></i> Kembali
+                    </a>
                 </div>
             </div>
         </div>

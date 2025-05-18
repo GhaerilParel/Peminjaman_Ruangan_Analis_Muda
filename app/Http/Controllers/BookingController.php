@@ -93,6 +93,10 @@ class BookingController extends Controller
 
     public function status()
     {
+        if (!auth()->check()) {
+            return redirect()->route('login')->withErrors(['error' => 'Anda harus login untuk melihat status peminjaman.']);
+        }
+
         $bookings = Booking::where('email', auth()->user()->email)->get(); // Filter berdasarkan email pengguna yang login
         return view('status', compact('bookings'));
     }
@@ -184,6 +188,14 @@ class BookingController extends Controller
     {
         $rooms = Room::all(); // Ambil semua data ruangan
         return view('index', compact('rooms')); // Kirim data ke view
+    }
+
+    public function destroy($id)
+    {
+        $booking = Booking::findOrFail($id);
+        $booking->delete();
+
+        return redirect()->route('status.peminjaman')->with('success', 'Booking berhasil dihapus.');
     }
 }
 

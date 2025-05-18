@@ -151,19 +151,26 @@
                                     </div>
                                 </div>
                             </div>
+                            <div class="row justify-content-center mb-4">
+                                <div class="col-md-6">
+                                    <label for="selected-date" class="form-label fw-bold text-center d-block">Pilih
+                                        Tanggal</label>
+                                        <input type="date" id="selected-date" name="booking_date" class="form-control mx-auto"
+                                        style="width: 100%; max-width: 400px; text-align: center;">
+                                </div>
+                            </div>
                             <div class="row justify-content-center">
                                 <div class="col-md-12">
                                     <div id="calendar-container" class="calendar-container">
-                                        <!-- input date -->
-                                        <input type="date" name="booking_date" class="required form-control"
-                                            placeholder="MM/DD/YYYY" required>
-                                        <div class="calendar-header">
-                                            <button id="prev-month" class="btn btn-primary">&lt;</button>
-                                            <span id="current-month-year"></span>
-                                            <button id="next-month" class="btn btn-primary">&gt;</button>
+                                        <div
+                                            class="calendar-header d-flex justify-content-between align-items-center bg-primary text-white p-2 rounded">
+                                            <button id="prev-month" class="btn btn-light btn-sm">&lt;</button>
+                                            <span id="current-month-year" class="fw-bold"></span>
+                                            <button id="next-month" class="btn btn-light btn-sm">&gt;</button>
                                         </div>
-                                        <div class="calendar-body">
-                                            <div class="calendar-days">
+                                        <div class="calendar-body mt-3">
+                                            <div
+                                                class="calendar-days d-flex justify-content-between text-center fw-bold">
                                                 <div>Sun</div>
                                                 <div>Mon</div>
                                                 <div>Tue</div>
@@ -172,7 +179,8 @@
                                                 <div>Fri</div>
                                                 <div>Sat</div>
                                             </div>
-                                            <div id="calendar-dates" class="calendar-dates"></div>
+                                            <div id="calendar-dates" class="calendar-dates d-grid gap-2 mt-2"
+                                                style="grid-template-columns: repeat(7, 1fr);"></div>
                                         </div>
                                     </div>
                                 </div>
@@ -186,6 +194,7 @@
                                 const prevMonthBtn = document.getElementById("prev-month");
                                 const nextMonthBtn = document.getElementById("next-month");
                                 const roomTypeSelect = document.getElementById("room_type_1");
+                                const selectedDateInput = document.getElementById("selected-date");
 
                                 let currentDate = new Date();
                                 let selectedRoomType = roomTypeSelect.value; // Default room type
@@ -319,15 +328,30 @@
                                 });
 
                                 // Navigasi bulan berikutnya
-                                nextMonthBtn.addEventListener("click", () => {
-                                    currentDate.setMonth(currentDate.getMonth() + 1);
-                                    renderCalendar();
-                                });
+nextMonthBtn.addEventListener("click", (event) => {
+    event.preventDefault(); // Mencegah aksi default tombol
+    currentDate.setMonth(currentDate.getMonth() + 1); // Geser ke bulan berikutnya
+    renderCalendar(); // Render ulang kalender
+});
 
                                 // Event listener untuk room_type
                                 roomTypeSelect.addEventListener("change", () => {
                                     selectedRoomType = roomTypeSelect.value; // Ambil nilai room_type yang dipilih
                                     renderCalendar(); // Render ulang kalender
+                                });
+
+                                // Sinkronisasi input tanggal dengan klik pada kalender
+                                calendarDates.addEventListener("click", function(event) {
+    const clickedDate = event.target.getAttribute("data-date");
+    if (clickedDate) {
+        document.getElementById("selected-date").value = clickedDate; // Sinkronisasi nilai
+    }
+});
+
+                                // Sinkronisasi input tanggal dengan kalender
+                                selectedDateInput.addEventListener("change", function() {
+                                    const selectedDate = selectedDateInput.value;
+                                    alert("Tanggal dipilih: " + selectedDate);
                                 });
 
                                 // Render kalender pertama kali
@@ -337,62 +361,16 @@
 
                         <style>
                             .calendar-container {
-                                width: 100%;
-                                max-width: 600px;
-                                margin: 0 auto;
                                 border: 1px solid #ddd;
                                 border-radius: 5px;
                                 box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
                                 background-color: #fff;
                             }
 
-                            /* Menyembunyikan header toolbar */
-                            .fc-header-toolbar {
-                                display: none !important;
-                            }
-
-                            /* Menyembunyikan toolbar yang berkaitan dengan kalender */
-                            .fc-toolbar {
-                                display: none !important;
-                            }
-
-                            .fc-view-harness {
-                                display: none !important;
-                            }
-
-                            .calendar-header {
-                                display: flex;
-                                justify-content: space-between;
-                                align-items: center;
-                                padding: 10px;
-                                background-color: #007bff;
-                                color: #fff;
-                                border-bottom: 1px solid #ddd;
-                            }
-
-                            .calendar-body {
-                                padding: 10px;
-                            }
-
-                            .calendar-days {
-                                display: grid;
-                                grid-template-columns: repeat(7, 1fr);
-                                text-align: center;
-                                font-weight: bold;
-                                margin-bottom: 10px;
-                            }
-
-                            .calendar-dates {
-                                display: grid;
-                                grid-template-columns: repeat(7, 1fr);
-                                gap: 5px;
-                            }
-
                             .calendar-dates div {
                                 text-align: center;
                                 padding: 10px;
                                 border-radius: 5px;
-                                cursor: pointer;
                                 cursor: pointer;
                                 transition: background-color 0.3s;
                             }
@@ -403,24 +381,17 @@
 
                             .calendar-dates .fully-booked {
                                 background-color: #ff0000;
-                                /* Merah untuk fully booked */
                                 color: #fff;
-                                cursor: pointer;
-                                /* Ubah pointer menjadi klik */
                             }
 
                             .calendar-dates .partially-booked {
                                 background-color: #ffc107;
-                                /* Kuning untuk partially booked */
                                 color: #000;
-                                cursor: pointer;
                             }
 
                             .calendar-dates .available {
                                 background-color: #00ff00;
-                                /* Hijau untuk tersedia */
                                 color: #fff;
-                                cursor: pointer;
                             }
 
                             .calendar-dates .available:hover {
@@ -548,40 +519,43 @@
                             <div class="row justify-content-center">
                                 <div class="col-sm-6">
                                     <!-- Input Jumlah Orang -->
-<div class="mb-3 qty-buttons d-flex align-items-center">
-    <input type="button" value="+" class="qtyplus btn btn-primary" name="Jumlah Orang">
-    <input type="text" name="jumlah_orang" id="jumlah_orang" value="1"
-        class="qty form-control required mx-2 flex-grow-1"
-        placeholder="Jumlah Orang"
-        style="width: 100%; text-align: left; padding-left: 10px;">
-    <input type="button" value="-" class="qtyminus btn btn-primary" name="Jumlah Orang">
-</div>
+                                    <div class="mb-3 qty-buttons d-flex align-items-center">
+                                        <input type="button" value="+" class="qtyplus btn btn-primary"
+                                            name="Jumlah Orang">
+                                        <input type="text" name="jumlah_orang" id="jumlah_orang" value="1"
+                                            class="qty form-control required mx-2 flex-grow-1"
+                                            placeholder="Jumlah Orang"
+                                            style="width: 100%; text-align: left; padding-left: 10px;">
+                                        <input type="button" value="-" class="qtyminus btn btn-primary"
+                                            name="Jumlah Orang">
+                                    </div>
+                                    <!-- Tombol Rekomendasi Ruangan -->
+<button type="button" class="btn btn-primary mt-3" id="recommend-room-btn" data-bs-toggle="modal" data-bs-target="#recommendRoomModal">
+    Rekomendasi Ruangan
+</button>
+                                </div>
+                            </div>
+                        </div>
 
-<!-- Button to open modal -->
-<div class="text-center mt-3">
-    <button type="button" class="btn btn-info" id="recommendationButton" data-bs-toggle="modal" data-bs-target="#roomRecommendationModal">
-        Rekomendasi Ruangan
-    </button>
-</div>
-
-<!-- Modal for Room Recommendations -->
-<div class="modal fade" id="roomRecommendationModal" tabindex="-1" aria-labelledby="roomRecommendationModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
+<!-- Modal Rekomendasi Ruangan -->
+<div class="modal fade" id="recommendRoomModal" tabindex="-1" aria-labelledby="recommendRoomModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
         <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="roomRecommendationModalLabel">Rekomendasi Ruangan</h5>
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title" id="recommendRoomModalLabel">Rekomendasi Ruangan</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <table class="table table-striped">
-                    <thead>
+                <table class="table table-bordered table-striped">
+                    <thead class="table-primary">
                         <tr>
                             <th>Nama Ruangan</th>
                             <th>Kapasitas</th>
+                            <th>Fasilitas</th>
                         </tr>
                     </thead>
-                    <tbody id="roomRecommendationBody">
-                        <!-- Room recommendations will be dynamically inserted here -->
+                    <tbody id="recommended-rooms-list">
+                        <!-- Daftar ruangan akan dimuat di sini -->
                     </tbody>
                 </table>
             </div>
@@ -594,63 +568,53 @@
 
 <script>
     document.addEventListener("DOMContentLoaded", function () {
+        const recommendRoomBtn = document.getElementById("recommend-room-btn");
         const jumlahOrangInput = document.getElementById("jumlah_orang");
-        const recommendationButton = document.getElementById("recommendationButton");
-        const roomRecommendationBody = document.getElementById("roomRecommendationBody");
+        const recommendedRoomsList = document.getElementById("recommended-rooms-list");
 
-        recommendationButton.addEventListener("click", async function () {
-            const jumlahOrang = parseInt(jumlahOrangInput.value);
+        recommendRoomBtn.addEventListener("click", async function () {
+            const jumlahOrang = jumlahOrangInput.value;
 
-            if (jumlahOrang > 0) {
-                // Fetch room recommendations from the database
-                const response = await fetch(`{{ route('api.rooms.recommendation') }}?capacity=${jumlahOrang}`);
-                const recommendedRooms = await response.json();
+            // Validasi input jumlah orang
+            if (!jumlahOrang || isNaN(jumlahOrang) || jumlahOrang <= 0) {
+                alert("Masukkan jumlah orang yang valid!");
+                return;
+            }
 
-                // Populate the table with recommended rooms
-                roomRecommendationBody.innerHTML = "";
+            // Ambil data ruangan dari API
+            try {
+                const response = await fetch(`/rooms/recommendation?capacity=${jumlahOrang}`);
+                const rooms = await response.json();
 
-                if (recommendedRooms.length > 0) {
-                    recommendedRooms.forEach(room => {
-                        roomRecommendationBody.innerHTML += `
-                            <tr>
-                                <td>${room.name}</td>
-                                <td>${room.capacity}</td>
-                            </tr>
+                // Kosongkan daftar sebelumnya
+                recommendedRoomsList.innerHTML = "";
+
+                if (rooms.length > 0) {
+                    // Tambahkan ruangan ke tabel
+                    rooms.forEach(room => {
+                        const row = document.createElement("tr");
+                        row.innerHTML = `
+                            <td>${room.name}</td>
+                            <td>${room.capacity}</td>
+                            <td>${room.facility}</td>
                         `;
+                        recommendedRoomsList.appendChild(row);
                     });
                 } else {
-                    roomRecommendationBody.innerHTML = `
-                        <tr>
-                            <td colspan="2" class="text-center">Tidak ada ruangan yang sesuai dengan jumlah orang.</td>
-                        </tr>
+                    // Tampilkan pesan jika tidak ada ruangan yang cocok
+                    const row = document.createElement("tr");
+                    row.innerHTML = `
+                        <td colspan="3" class="text-center text-danger">Tidak ada ruangan yang cocok.</td>
                     `;
+                    recommendedRoomsList.appendChild(row);
                 }
+            } catch (error) {
+                console.error("Gagal mengambil data ruangan:", error);
+                alert("Terjadi kesalahan saat mengambil data ruangan.");
             }
         });
     });
 </script>
-                                </div>
-                            </div>
-
-                            <script>
-                                document.addEventListener("DOMContentLoaded", function() {
-                                    document.querySelector(".qtyplus").addEventListener("click", function() {
-                                        let input = document.getElementById("jumlah_orang");
-                                        input.value = parseInt(input.value) + 1;
-                                    });
-
-                                    document.querySelector(".qtyminus").addEventListener("click", function() {
-                                        let input = document.getElementById("jumlah_orang");
-                                        if (parseInt(input.value) > 1) {
-                                            input.value = parseInt(input.value) - 1;
-                                        }
-                                    });
-                                });
-                            </script>
-                            <!-- /row -->
-                            <!-- /row -->
-                        </div>
-                        <!-- /Step -->
 
                         <div class="submit step">
                             <div class="question_title">
@@ -1264,16 +1228,16 @@
     </style>
 
     <script>
-        document.getElementById('next-button').addEventListener('click', function() {
-            @auth
-            // Jika user sudah login, lanjutkan ke langkah berikutnya
-            document.querySelector('.forward').click();
-        @else
-            // Jika user belum login, arahkan ke halaman login
-            const loginModal = new bootstrap.Modal(document.getElementById('loginModal'));
-            loginModal.show();
-        @endauth
-        });
+        document.getElementById('next-button').addEventListener('click', function () {
+    @auth
+    // Jika user sudah login, lanjutkan ke langkah berikutnya
+    document.querySelector('.forward').click();
+    @else
+    // Jika user belum login, arahkan ke halaman login
+    const loginModal = new bootstrap.Modal(document.getElementById('loginModal'));
+    loginModal.show();
+    @endauth
+});
     </script>
 
     <script>

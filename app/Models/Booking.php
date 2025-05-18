@@ -15,17 +15,17 @@ class Booking extends Model
     protected $fillable = [
         'room_type',
         'booking_date',
+        'waktu_mulai',
+        'waktu_selesai',
         'jumlah_orang',
         'nama',
         'nim',
         'jurusan',
         'email',
         'no_telepon',
-        'waktu_mulai',
-        'waktu_selesai',
         'alasan',
-        'file',
         'status',
+        'file',
     ];   
     
     public static function boot()
@@ -77,7 +77,7 @@ class Booking extends Model
 
     public function room()
     {
-        return $this->belongsTo(Room::class, 'room_type');
+        return $this->belongsTo(Room::class, 'room_type', 'id');
     }
 
 }

@@ -76,6 +76,10 @@ class BookingResource extends Resource
                     ->directory('uploads') // Simpan file di folder 'uploads'
                     ->acceptedFileTypes(['application/pdf']) // Hanya izinkan file PDF
                     ->maxSize(2048), // Maksimal ukuran file 2MB
+                Select::make('room_type')
+                    ->label('Tipe Ruangan')
+                    ->options(\App\Models\Room::pluck('name', 'id')) // Ambil daftar ruangan dari model Room
+                    ->required(),
             ]);
     }
 
@@ -99,23 +103,11 @@ class BookingResource extends Resource
                 TextColumn::make('jumlah_orang') // Tambahkan kolom ini
                     ->label('Jumlah Orang')
                     ->sortable(),
-                TextColumn::make('room_type')
+                    TextColumn::make('room_type')
                     ->label('Tipe Ruangan')
                     ->formatStateUsing(function ($state) {
-                        $rooms = [
-                            1 => 'CB Pemrograman',
-                            2 => 'CB K70-1',
-                            3 => 'CA RPL',
-                            4 => 'CA KOM 1',
-                            5 => 'CA KOM 2',
-                            6 => 'CB Jaringan',
-                            7 => 'CB KOM 1',
-                            8 => 'CB KOM 2',
-                            9 => 'CB KOM 3',
-                            10 => 'CB KOM 4',
-                            11 => 'CB KOM 5',
-                        ];
-                        return $rooms[$state] ?? 'Tidak Diketahui';
+                        $room = \App\Models\Room::find($state); // Ambil data ruangan berdasarkan ID
+                        return $room ? $room->name : 'Tidak Diketahui'; // Tampilkan nama ruangan atau fallback
                     }),
                 BadgeColumn::make('status')
                     ->label('Status')

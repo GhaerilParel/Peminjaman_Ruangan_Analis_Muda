@@ -54,13 +54,13 @@
                         <div class="col-md-6 mb-4">
                             <label for="waktu_mulai" class="form-label fw-bold">Waktu Mulai</label>
                             <input type="time" name="waktu_mulai" id="waktu_mulai" class="form-control"
-                                value="{{ old('waktu_mulai', $booking->waktu_mulai) }}" required placeholder="HH:mm">
+                                value="{{ old('waktu_mulai', $booking->waktu_mulai) }}" placeholder="HH:mm">
                         </div>
 
                         <div class="col-md-6 mb-4">
                             <label for="waktu_selesai" class="form-label fw-bold">Waktu Selesai</label>
                             <input type="time" name="waktu_selesai" id="waktu_selesai" class="form-control"
-                                value="{{ old('waktu_selesai', $booking->waktu_selesai) }}" required placeholder="HH:mm">
+                                value="{{ old('waktu_selesai', $booking->waktu_selesai) }}" placeholder="HH:mm">
                         </div>
                     </div>
 

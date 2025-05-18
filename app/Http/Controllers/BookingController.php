@@ -67,8 +67,9 @@ class BookingController extends Controller
 
         // Ambil data booking dengan status approved
         $bookings = Booking::where('room_type', $roomType)
-            ->where('status', 'approved') // Hanya ambil booking dengan status approved
-            ->select('booking_date', 'waktu_mulai', 'waktu_selesai', 'nama') // Pilih kolom yang diperlukan
+            ->where('status', 'approved')
+            ->with('room') // Pastikan relasi room di-load
+            ->select('booking_date', 'waktu_mulai', 'waktu_selesai', 'nama', 'room_type') // Tambahkan room_type
             ->get();
 
         // Format data untuk dikirim ke frontend
@@ -81,6 +82,7 @@ class BookingController extends Controller
                         'nama' => $booking->nama,
                         'waktu_mulai' => $booking->waktu_mulai,
                         'waktu_selesai' => $booking->waktu_selesai,
+                        'room_name' => $booking->room->name ?? 'Unknown', // Ambil nama ruangan
                     ];
                 })->toArray(),
             ];
@@ -97,12 +99,21 @@ class BookingController extends Controller
 
     public function update(Request $request, Booking $booking)
     {
-        $request->validate([
+        $rules = [
             'room_type' => 'required|exists:rooms,id', // Validasi ruangan harus ada di tabel rooms
             'booking_date' => 'required|date',
-            'waktu_mulai' => 'required|date_format:H:i|after_or_equal:06:00|before_or_equal:20:00',
-            'waktu_selesai' => 'required|date_format:H:i|after:waktu_mulai|before_or_equal:20:00',
-        ]);
+        ];
+
+        // Hanya validasi waktu jika ada perubahan
+        if (
+            $request->waktu_mulai !== $booking->waktu_mulai ||
+            $request->waktu_selesai !== $booking->waktu_selesai
+        ) {
+            $rules['waktu_mulai'] = 'required|date_format:H:i|after_or_equal:06:00|before_or_equal:20:00';
+            $rules['waktu_selesai'] = 'required|date_format:H:i|after:waktu_mulai|before_or_equal:20:00';
+        }
+
+        $request->validate($rules);
 
         // Simpan file jika ada
         if ($request->hasFile('file')) {
@@ -110,19 +121,26 @@ class BookingController extends Controller
             $booking->file = $filePath;
         }
 
-        // Validasi apakah waktu di hari yang sama sudah dibooking
-        $isTimeConflict = Booking::where('room_type', $request->room_type)
-            ->where('booking_date', $request->booking_date)
-            ->where('status', 'approved') // Hanya booking dengan status approved
-            ->where('id', '!=', $booking->id) // Abaikan booking yang sedang diedit
-            ->where(function ($query) use ($request) {
-                $query->where('waktu_mulai', '<', $request->waktu_selesai)
-                      ->where('waktu_selesai', '>', $request->waktu_mulai);
-            })
-            ->exists();
+        // Validasi apakah waktu di hari yang sama sudah dibooking, hanya jika waktu berubah
+        if (
+            $request->waktu_mulai !== $booking->waktu_mulai ||
+            $request->waktu_selesai !== $booking->waktu_selesai ||
+            $request->booking_date !== $booking->booking_date ||
+            $request->room_type !== $booking->room_type
+        ) {
+            $isTimeConflict = Booking::where('room_type', $request->room_type)
+                ->where('booking_date', $request->booking_date)
+                ->where('status', 'approved') // Hanya booking dengan status approved
+                ->where('id', '!=', $booking->id) // Abaikan booking yang sedang diedit
+                ->where(function ($query) use ($request) {
+                    $query->where('waktu_mulai', '<', $request->waktu_selesai)
+                          ->where('waktu_selesai', '>', $request->waktu_mulai);
+                })
+                ->exists();
 
-        if ($isTimeConflict) {
-            return redirect()->back()->withErrors(['error' => 'Waktu yang dipilih sudah dibooking pada tanggal tersebut.']);
+            if ($isTimeConflict) {
+                return redirect()->back()->withErrors(['error' => 'Waktu yang dipilih sudah dibooking pada tanggal tersebut.']);
+            }
         }
 
         // Update data booking
@@ -140,15 +158,11 @@ class BookingController extends Controller
             'alasan' => $request->review,
         ]);
 
-        // Ambil data terbaru dari database
-        $booking = Booking::find($booking->id);
-
         // Kirim email dengan data terbaru
         Mail::to($booking->email)->send(new BookingStatusUpdated($booking));
 
         // Redirect ke route status.peminjaman
         return redirect()->route('status.peminjaman')->with('success', 'Booking berhasil diperbarui!');
-        dd($request->all()); // Debug the incoming request data
     }
 
     public function edit(Booking $booking)

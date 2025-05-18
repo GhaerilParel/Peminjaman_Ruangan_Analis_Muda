@@ -7,11 +7,14 @@ use App\Models\Room;
 
 class RoomController extends Controller
 {
-    public function getRecommendations(Request $request)
+    public function getRecommendedRooms(Request $request)
     {
-        $capacity = $request->query('capacity', 0);
+        $capacity = $request->query('capacity');
 
-        // Query rooms with capacity greater than or equal to the requested capacity
+        if (!$capacity || !is_numeric($capacity)) {
+            return response()->json(['error' => 'Invalid capacity'], 400);
+        }
+
         $rooms = Room::where('capacity', '>=', $capacity)->get();
 
         return response()->json($rooms);
